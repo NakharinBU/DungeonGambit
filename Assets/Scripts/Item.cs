@@ -32,11 +32,11 @@ public class Item : MonoBehaviour
             case ItemEffect.HealHP:
 
                 // target.Heal(value); 
-                Debug.Log($"{target.name} ใช้ {name} และฟื้นฟู HP {value} หน่วย");
+                Debug.Log($"{target.characterName} ใช้ {name} และฟื้นฟู HP {value} หน่วย");
                 break;
             case ItemEffect.RestoreMP:
                 // target.RestoreMana(value);
-                Debug.Log($"{target.name} ใช้ {name} และฟื้นฟู MP {value} หน่วย");
+                Debug.Log($"{target.characterName} ใช้ {name} และฟื้นฟู MP {value} หน่วย");
                 break;
 
                 // ... เพิ่ม ItemEffect อื่นๆ ที่นี่
