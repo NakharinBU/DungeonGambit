@@ -26,7 +26,7 @@ public class DungeonManager : MonoBehaviour
 
     public InteractableObject chestPrefab;
     
-    public int MinSpawnDistance = 3;
+    public int MinSpawnDistance = 4;
 
     public int MapWidth = 10;
     public int MapHeight = 10;
@@ -75,7 +75,10 @@ public class DungeonManager : MonoBehaviour
         }
 
         SpawnPlayer();
-        SpawnEnemies(level);
+
+        SetupUI();
+
+        SpawnEnemies(level * 2);
     }
 
     private void SpawnPlayer()
@@ -347,5 +350,25 @@ public class DungeonManager : MonoBehaviour
         }
 
         return Vector2Int.zero;
+    }
+
+    private void SetupUI()
+    {
+        // 1. หา CurrencyUI ใน Scene
+        CurrencyUI[] allCurrencyUIs = FindObjectsOfType<CurrencyUI>();
+        Player player = GetPlayer(); // ดึง Player ที่เพิ่งสร้างมา
+
+        if (player != null)
+        {
+            foreach (var currencyUI in allCurrencyUIs)
+            {
+                // 2. สั่ง Setup โดยตรง
+                currencyUI.Setup(player);
+            }
+        }
+        else
+        {
+            Debug.LogError("Player not found when trying to setup Currency UI!");
+        }
     }
 }

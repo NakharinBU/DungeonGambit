@@ -1,16 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
 using static EnumData;
+using System;
 
 [System.Serializable]
-public class CurrencyManager : MonoBehaviour
+public class CurrencyManager
 {
-    [SerializeField] private int gold = 0;
-    [SerializeField] private int soulPoint = 0;
-    [SerializeField] private int undoPoint = 0;
+    private int gold = 0;
+    private int soulPoint = 0;
+    private int undoPoint = 0;
 
     // สมมติว่า SoulUpgrade สร้างทีหลัง
     public List<string> availableUpgrades = new List<string>();
+
+
+    public event Action<CurrencyType, int> OnCurrencyChanged;
+
 
     public void Add(CurrencyType type, int amount)
     {
@@ -20,6 +25,7 @@ public class CurrencyManager : MonoBehaviour
         {
             case CurrencyType.Gold:
                 gold += amount;
+                OnCurrencyChanged?.Invoke(CurrencyType.Gold, gold);
                 Debug.Log($"Added {amount} Gold. Total: {gold}");
                 break;
             case CurrencyType.SoulPoint:
