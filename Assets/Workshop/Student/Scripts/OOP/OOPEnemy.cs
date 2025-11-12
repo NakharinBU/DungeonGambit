@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Solution
 {
 
-    public class OOPEnemy : Character
+    public class OOPEnemy : OldCharacter
     {
         public TMP_Text txtHp;
         public override void SetUP()

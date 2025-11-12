@@ -36,12 +36,12 @@ public class Item : MonoBehaviour
             case ItemEffect.HealHP:
                 // สมมติว่า Player มี method Heal() (เราจะสร้างใน Wave 3)
                 // target.Heal(value); 
-                Debug.Log($"{target.Name} ใช้ {name} และฟื้นฟู HP {value} หน่วย");
+                //Debug.Log($"{target.Name} ใช้ {name} และฟื้นฟู HP {value} หน่วย");
                 break;
             case ItemEffect.RestoreMP:
                 // สมมติว่า Player มี method RestoreMana() (เราจะสร้างใน Wave 3)
                 // target.RestoreMana(value);
-                Debug.Log($"{target.Name} ใช้ {name} และฟื้นฟู MP {value} หน่วย");
+                //Debug.Log($"{target.Name} ใช้ {name} และฟื้นฟู MP {value} หน่วย");
                 break;
                 // ... เพิ่ม ItemEffect อื่นๆ ที่นี่
         }

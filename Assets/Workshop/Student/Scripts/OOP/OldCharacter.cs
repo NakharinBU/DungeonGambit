@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Solution
 {
-    public class Character : Identity
+    public class OldCharacter : Identity
     {
         [Header("Character")]
         public int energy;

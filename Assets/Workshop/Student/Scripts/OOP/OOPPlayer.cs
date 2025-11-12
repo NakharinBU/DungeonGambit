@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Solution
 {
 
-    public class OOPPlayer : Character
+    public class OOPPlayer : OldCharacter
     {
         public Inventory inventory;
         public ActionHistoryManager actionHistoryManager;
