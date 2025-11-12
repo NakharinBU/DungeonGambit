@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
         if (Instance != null && Instance != this) Destroy(gameObject);
         else Instance = this;
 
-        dungeonManager = FindObjectOfType<DungeonManager>();
+        dungeonManager = FindFirstObjectByType<DungeonManager>();
     }
 
     private void Start()

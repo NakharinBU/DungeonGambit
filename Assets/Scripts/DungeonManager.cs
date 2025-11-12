@@ -1,12 +1,12 @@
+using static EnumData;
 using System.Collections.Generic;
 using UnityEngine;
-using static EnumData;
+using System.Linq;
 
 public class DungeonManager : MonoBehaviour
 {
     public static DungeonManager Instance { get; private set; }
 
-    // 
     private Tile[,] map;
     private List<Vector2Int> spawnPoints;
     private List<Enemy> enemiesOnFloor;
@@ -17,29 +17,27 @@ public class DungeonManager : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject[] enemyPrefabs;
 
-    private const int MapWidth = 10;
-    private const int MapHeight = 10;
-
     private void Awake()
     {
         if (Instance != null && Instance != this) Destroy(gameObject);
         else Instance = this;
-        enemiesOnFloor = new List<Enemy>(); // Initialize list
     }
 
     public void GenerateFloor(int level)
     {
-        // ... (Mock Map Generation) ...
-        map = new Tile[MapWidth, MapHeight];
+        // ... (Map Generation Logic) ...
+        // Mock Map Generation (10x10)
+        int width = 10; int height = 10;
+        map = new Tile[width, height];
         spawnPoints = new List<Vector2Int>();
-        ClearFloor(); // Clear existing objects
+        enemiesOnFloor = new List<Enemy>();
 
-        for (int x = 0; x < MapWidth; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < MapHeight; y++)
+            for (int y = 0; y < height; y++)
             {
-                TileType type = (x == 0 || x == MapWidth - 1 || y == 0 || y == MapHeight - 1) ? TileType.Wall : TileType.Floor;
-                map[x, y] = new Tile(new Vector2Int(x, y), type);
+                TileType type = (x == 5 && y == 5) ? TileType.Exit : TileType.Floor;
+                map[x, y] = new Tile(new Vector2(x, y), type);
                 if (map[x, y].IsWalkable()) spawnPoints.Add(new Vector2Int(x, y));
             }
         }
@@ -50,45 +48,54 @@ public class DungeonManager : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        // ป้องกันการ spawn ซ้ำ
-        if (currentPlayer != null) return;
+        if (spawnPoints.Count == 0 || playerPrefab == null) return;
+        Vector2Int spawnPos = spawnPoints[Random.Range(0, spawnPoints.Count)];
+        spawnPoints.Remove(spawnPos);
 
-        Vector2Int spawnPos = new Vector2Int(1, 1);
-
-        GameObject playerObj = Instantiate(playerPrefab, new Vector3(spawnPos.x, spawnPos.y, -0.1f), Quaternion.identity);
+        GameObject playerObj = Instantiate(playerPrefab, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
         currentPlayer = playerObj.GetComponent<Player>();
         currentPlayer.position = spawnPos;
-        GetTile(spawnPos.x, spawnPos.y)?.SetOccupied(true);
     }
 
     public void SpawnEnemies(int count)
     {
-        if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
-        Vector2Int spawnPos = new Vector2Int(MapWidth - 2, MapHeight - 2);
+        for (int i = 0; i < count && spawnPoints.Count > 0; i++)
+        {
+            Vector2Int spawnPos = spawnPoints[Random.Range(0, spawnPoints.Count)];
+            spawnPoints.Remove(spawnPos);
 
-        GameObject enemyObj = Instantiate(enemyPrefabs[0], new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
-        Enemy newEnemy = enemyObj.GetComponent<Enemy>();
-        newEnemy.position = spawnPos;
-        GetTile(spawnPos.x, spawnPos.y)?.SetOccupied(true);
-        enemiesOnFloor.Add(newEnemy);
-    }
+            GameObject enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+            GameObject enemyObj = Instantiate(enemyPrefab, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
+            Enemy newEnemy = enemyObj.GetComponent<Enemy>();
 
-    public Tile GetTile(int x, int y)
-    {
-        if (map == null || x < 0 || y < 0 || x >= MapWidth || y >= MapHeight) return null;
-        return map[x, y];
-    }
-
-    public Player GetPlayer() => currentPlayer;
-    public Character GetCharacterAtPosition(Vector2Int pos)
-    {
-        if (currentPlayer != null && currentPlayer.position == pos) return currentPlayer;
-        return enemiesOnFloor.Find(e => e != null && e.position == pos);
+            enemiesOnFloor.Add(newEnemy);
+        }
     }
 
     public void ClearFloor()
     {
-        enemiesOnFloor.RemoveAll(e => e == null || e.gameObject == null);
-        // Logic for destroying all objects on map...
+        if (enemiesOnFloor != null)
+        {
+            foreach (Enemy enemy in enemiesOnFloor.Where(e => e != null)) Destroy(enemy.gameObject);
+            enemiesOnFloor.Clear();
+        }
+        if (currentPlayer != null) Destroy(currentPlayer.gameObject);
+    }
+
+    public Tile GetTile(int x, int y)
+    {
+        if (map == null || x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1)) return null;
+        return map[x, y];
+    }
+
+    public Player GetPlayer() => currentPlayer;
+    public List<Enemy> GetEnemies() => enemiesOnFloor.Where(e => e != null).ToList();
+
+    // --- New Method: GetCharacterAtPosition (เพื่อใช้ใน Player.Move) ---
+    public Character GetCharacterAtPosition(Vector2Int pos)
+    {
+        if (currentPlayer != null && currentPlayer.position == pos) return currentPlayer;
+        // ค้นหาในศัตรูที่ยังมีชีวิตอยู่
+        return enemiesOnFloor.Find(e => e != null && e.position == pos);
     }
 }
