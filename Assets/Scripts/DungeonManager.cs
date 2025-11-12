@@ -9,13 +9,23 @@ public class DungeonManager : MonoBehaviour
 
     private Tile[,] map;
     private List<Vector2Int> spawnPoints;
-    private List<Enemy> enemiesOnFloor;
+    private List<Enemy> enemiesOnFloor = new List<Enemy>(); // ต้อง Initialize ตั้งแต่แรก
     private Player currentPlayer;
     public int currentFloor = 1;
 
     [Header("Prefabs")]
     public GameObject playerPrefab;
     public GameObject[] enemyPrefabs;
+
+    [Header("Tile Prefabs")]
+    public GameObject floorPrefab;
+    public GameObject wallPrefab;
+
+    [Header("Parents")]
+    public Transform tileParent;
+
+    public int MapWidth = 10;
+    public int MapHeight = 10;
 
     private void Awake()
     {
@@ -25,77 +35,108 @@ public class DungeonManager : MonoBehaviour
 
     public void GenerateFloor(int level)
     {
-        // ... (Map Generation Logic) ...
-        // Mock Map Generation (10x10)
-        int width = 10; int height = 10;
-        map = new Tile[width, height];
-        spawnPoints = new List<Vector2Int>();
-        enemiesOnFloor = new List<Enemy>();
+        // 1. เคลียร์ฉากเก่า
+        ClearFloor();
 
-        for (int x = 0; x < width; x++)
+        map = new Tile[MapWidth, MapHeight];
+        spawnPoints = new List<Vector2Int>();
+        currentFloor = level;
+
+        if (tileParent == null)
         {
-            for (int y = 0; y < height; y++)
+            tileParent = new GameObject("TileParent").transform;
+        }
+
+        // 2. สร้าง Data Grid (Tile Data) และ Visual Map
+        for (int x = 0; x < MapWidth; x++)
+        {
+            for (int y = 0; y < MapHeight; y++)
             {
-                TileType type = (x == 5 && y == 5) ? TileType.Exit : TileType.Floor;
-                map[x, y] = new Tile(new Vector2(x, y), type);
+                TileType type = (x == 0 || x == MapWidth - 1 || y == 0 || y == MapHeight - 1)
+                                ? TileType.Wall
+                                : TileType.Floor;
+
+                map[x, y] = new Tile(new Vector2Int(x, y), type);
+
+                // Instantiate Visual Tile
+                GameObject tileToSpawn = (type == TileType.Wall) ? wallPrefab : floorPrefab;
+                if (tileToSpawn != null)
+                {
+                    GameObject instance = Instantiate(tileToSpawn, new Vector3(x, y, 1), Quaternion.identity);
+                    instance.transform.parent = tileParent;
+                    instance.name = $"Tile_{type}_{x},{y}";
+                }
+
                 if (map[x, y].IsWalkable()) spawnPoints.Add(new Vector2Int(x, y));
             }
         }
 
+        // 3. Spawn Actors
         SpawnPlayer();
         SpawnEnemies(level * 2);
     }
 
     private void SpawnPlayer()
     {
-        if (spawnPoints.Count == 0 || playerPrefab == null) return;
-        Vector2Int spawnPos = spawnPoints[Random.Range(0, spawnPoints.Count)];
-        spawnPoints.Remove(spawnPos);
+        if (currentPlayer != null) return;
 
-        GameObject playerObj = Instantiate(playerPrefab, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
+        // ตำแหน่ง 1, 1 คือตำแหน่งเริ่มต้นที่ดี
+        Vector2Int spawnPos = new Vector2Int(1, 1);
+
+        GameObject playerObj = Instantiate(playerPrefab, new Vector3(spawnPos.x, spawnPos.y, -0.1f), Quaternion.identity);
         currentPlayer = playerObj.GetComponent<Player>();
         currentPlayer.position = spawnPos;
+        GetTile(spawnPos.x, spawnPos.y)?.SetOccupied(true);
+        currentPlayer.name = "PLAYER";
     }
 
     public void SpawnEnemies(int count)
     {
-        for (int i = 0; i < count && spawnPoints.Count > 0; i++)
-        {
-            Vector2Int spawnPos = spawnPoints[Random.Range(0, spawnPoints.Count)];
-            spawnPoints.Remove(spawnPos);
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
 
-            GameObject enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
-            GameObject enemyObj = Instantiate(enemyPrefab, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
-            Enemy newEnemy = enemyObj.GetComponent<Enemy>();
+        // วางศัตรูตัวแรกที่มุมตรงข้าม
+        Vector2Int spawnPos = new Vector2Int(MapWidth - 2, MapHeight - 2);
 
-            enemiesOnFloor.Add(newEnemy);
-        }
-    }
-
-    public void ClearFloor()
-    {
-        if (enemiesOnFloor != null)
-        {
-            foreach (Enemy enemy in enemiesOnFloor.Where(e => e != null)) Destroy(enemy.gameObject);
-            enemiesOnFloor.Clear();
-        }
-        if (currentPlayer != null) Destroy(currentPlayer.gameObject);
+        GameObject enemyObj = Instantiate(enemyPrefabs[0], new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
+        Enemy newEnemy = enemyObj.GetComponent<Enemy>();
+        newEnemy.position = spawnPos;
+        GetTile(spawnPos.x, spawnPos.y)?.SetOccupied(true);
+        enemiesOnFloor.Add(newEnemy);
+        newEnemy.name = $"ENEMY_{spawnPos.x},{spawnPos.y}";
     }
 
     public Tile GetTile(int x, int y)
     {
-        if (map == null || x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1)) return null;
+        if (map == null || x < 0 || y < 0 || x >= MapWidth || y >= MapHeight) return null;
         return map[x, y];
     }
 
     public Player GetPlayer() => currentPlayer;
-    public List<Enemy> GetEnemies() => enemiesOnFloor.Where(e => e != null).ToList();
-
-    // --- New Method: GetCharacterAtPosition (เพื่อใช้ใน Player.Move) ---
     public Character GetCharacterAtPosition(Vector2Int pos)
     {
+        // ตรวจสอบ Player
         if (currentPlayer != null && currentPlayer.position == pos) return currentPlayer;
-        // ค้นหาในศัตรูที่ยังมีชีวิตอยู่
+        // ตรวจสอบ Enemy
         return enemiesOnFloor.Find(e => e != null && e.position == pos);
+    }
+
+    public void ClearFloor()
+    {
+        // ทำลาย Player
+        if (currentPlayer != null) Destroy(currentPlayer.gameObject);
+        currentPlayer = null;
+
+        // ทำลาย Enemy
+        foreach (var enemy in enemiesOnFloor.ToList()) if (enemy != null) Destroy(enemy.gameObject);
+        enemiesOnFloor.Clear();
+
+        // ทำลาย Visual Tiles
+        if (tileParent != null)
+        {
+            // ทำให้มั่นใจว่า Destroy ได้อย่างปลอดภัย
+            List<GameObject> childrenToDestroy = new List<GameObject>();
+            foreach (Transform child in tileParent) childrenToDestroy.Add(child.gameObject);
+            childrenToDestroy.ForEach(Destroy);
+        }
     }
 }

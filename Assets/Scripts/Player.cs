@@ -1,31 +1,56 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class Player : Character
 {
-
     public Inventory inventory = new Inventory();
     public CurrencyManager currencies = new CurrencyManager();
     public bool isAutoMoving = false;
+    public TileHighlighter highlighter;
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
-        characterName = "Player";
+        base.Start();
+        highlighter = GetComponent<TileHighlighter>();
     }
 
     private void Update()
     {
-        // äÁèÁÕ TurnManager áÅéÇ àÃÒ¨Ðàªç¤á¤èÇèÒÊÒÁÒÃ¶¢ÂÑºä´é (currentState = PlayerTurn)
-        // à¾×èÍãËéÊÒÁÒÃ¶·´ÊÍº¡ÒÃà¤Å×èÍ¹·Õèä´éµèÍà¹×èÍ§ (äÁèãªè Turn-Based)
         if (!isAutoMoving)
         {
-            // Input Logic: WASD
+            if (highlighter != null)
+            {
+                highlighter.ShowHighlights(this);
+            }
+
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Move(Vector2Int.up);
             if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Move(Vector2Int.down);
             if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Move(Vector2Int.left);
             if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Move(Vector2Int.right);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector2Int targetPos = GetGridPositionFromMouse();
+                Vector2Int direction = targetPos - position;
+
+                // à¸ˆà¸³à¸à¸±à¸”à¸à¸²à¸£à¹€à¸„à¸¥à¸·à¹ˆà¸­à¸™à¸—à¸µà¹ˆà¹ƒà¸«à¹‰à¹€à¸›à¹‡à¸™ 1 à¸Šà¹ˆà¸­à¸‡ (à¸«à¸£à¸·à¸­à¹à¸™à¸§à¸—à¹à¸¢à¸‡ 1 à¸Šà¹ˆà¸­à¸‡)
+                if (direction.magnitude > 0 && Mathf.Abs(direction.x) <= 1 && Mathf.Abs(direction.y) <= 1)
+                {
+                    // Normalize direction (à¹€à¸Šà¹ˆà¸™ à¸–à¹‰à¸²à¸„à¸¥à¸´à¸à¹„à¸›à¸—à¸µà¹ˆ (x+1, y+1) à¸ˆà¸° Move(1, 1))
+                    direction.x = Mathf.Clamp(direction.x, -1, 1);
+                    direction.y = Mathf.Clamp(direction.y, -1, 1);
+                    Move(direction);
+                }
+            }
         }
+    }
+
+    private Vector2Int GetGridPositionFromMouse()
+    {
+        // à¹à¸›à¸¥à¸‡à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡à¹€à¸¡à¸²à¸ªà¹Œà¸šà¸™à¸«à¸™à¹‰à¸²à¸ˆà¸­à¹€à¸›à¹‡à¸™à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡à¹ƒà¸™ World
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // à¹à¸›à¸¥à¸‡à¹€à¸›à¹‡à¸™à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡ Grid (à¸›à¸±à¸”à¹€à¸¨à¸©à¹ƒà¸à¸¥à¹‰à¹€à¸„à¸µà¸¢à¸‡)
+        return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     }
 
     public override void Move(Vector2Int direction)
@@ -46,14 +71,6 @@ public class Player : Character
 
         Vector3 targetWorldPos = new Vector3(position.x, position.y, transform.position.z);
         StartCoroutine(MoveSmoothly(targetWorldPos));
-
-        // *** äÁèÁÕ¡ÒÃàÃÕÂ¡ TurnManager.Instance.EndPlayerTurn() ***
-    }
-
-    public override void Attack(Character target)
-    {
-        base.Attack(target);
-        // *** äÁèÁÕ¡ÒÃàÃÕÂ¡ TurnManager.Instance.EndPlayerTurn() ***
     }
 
     IEnumerator MoveSmoothly(Vector3 target)

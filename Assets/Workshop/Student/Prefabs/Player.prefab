@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4314285243807817638}
-  - component: {fileID: 5267956022897430819}
-  - component: {fileID: 5615206909734415387}
   - component: {fileID: 5156928828496199718}
-  - component: {fileID: 8745078477324140396}
+  - component: {fileID: 5267956022897430819}
+  - component: {fileID: 5888287857655787416}
+  - component: {fileID: 572413281017347314}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -35,6 +35,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5156928828496199718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2975489352503432100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dca6699fad53f94f86b4b99eb0753c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &5267956022897430819
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -90,7 +102,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5615206909734415387
+--- !u!114 &5888287857655787416
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -99,24 +111,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 2975489352503432100}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f68d9ca032a9a5428e03e27b1c0b9b3, type: 3}
+  m_Script: {fileID: 11500000, guid: 16ab472b4c87464499a351f149f66c62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Boy
-  positionX: 0
-  positionY: 0
-  mapGenerator: {fileID: 0}
-  energy: 20
-  maxEnergy: 20
-  AttackPoint: 10
-  spriteRenderer: {fileID: 0}
-  normalColor: {r: 1, g: 1, b: 1, a: 1}
-  damagedColor1: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  damagedColor2: {r: 1, g: 0, b: 0, a: 1}
-  inventory: {fileID: 5156928828496199718}
-  actionHistoryManager: {fileID: 0}
+  characterName: Base Character
+  stats: {fileID: 0}
+  position: {x: 0, y: 0}
+  inventory: {fileID: 0}
+  currencies: {fileID: 0}
   isAutoMoving: 0
---- !u!114 &5156928828496199718
+  highlighter: {fileID: -7549262767454066059, guid: f86745dbd00c9f846858a728cd95d610, type: 3}
+--- !u!114 &572413281017347314
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,18 +130,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2975489352503432100}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dca6699fad53f94f86b4b99eb0753c0, type: 3}
+  m_Script: {fileID: 11500000, guid: f37787f020dcba741a4f95f68c7fe788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8745078477324140396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2975489352503432100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 810d052ef1684ec4194824cb4de25d9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  highlightPrefab: {fileID: 5786550237389604587, guid: f86745dbd00c9f846858a728cd95d610, type: 3}
+  emptyColor: {r: 0, g: 0.6, b: 1, a: 0.4}
+  enemyColor: {r: 1, g: 0, b: 0, a: 0.5}
+  exitColor: {r: 0, g: 1, b: 0, a: 0.5}
+  wallColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.2}

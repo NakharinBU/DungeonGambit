@@ -29,7 +29,7 @@ namespace Solution
             if (!isAutoMoving)
             {
                 // อัปเดตช่อง highlight รอบตัวทุกเฟรม
-                tileHighlighter.ShowHighlights(new Vector2Int(positionX, positionY), mapGenerator);
+                //tileHighlighter.ShowHighlights(new Vector2Int(positionX, positionY), mapGenerator);
 
                 // คลิกเพื่อเดิน
                 if (Input.GetMouseButtonDown(0))

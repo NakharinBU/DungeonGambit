@@ -20,7 +20,7 @@ public class Character : MonoBehaviour
 
     protected virtual void Start()
     {
-        //dungeonManager = DungeonManager.Instance;
+        dungeonManager = DungeonManager.Instance;
         combatSystem = CombatSystem.Instance();
     }
 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 969057988701831292}
   - component: {fileID: 2138458655763999}
   - component: {fileID: -7549262767454066059}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HighlightTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2071467185
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 0, g: 0.37927818, b: 1, a: 1}
@@ -104,3 +104,4 @@ MonoBehaviour:
   emptyColor: {r: 0, g: 0.6, b: 1, a: 0.4}
   enemyColor: {r: 1, g: 0, b: 0, a: 0.5}
   exitColor: {r: 0, g: 1, b: 0, a: 0.5}
+  wallColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.2}
