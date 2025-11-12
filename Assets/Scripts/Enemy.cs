@@ -1,31 +1,37 @@
 using UnityEngine;
+using static EnumData;
 
-public class Enemy : Character
+public abstract class Enemy : Character
 {
-    //public EnemyType type;
-    //public EnemyAI ai;
-    //public List<Item> drops;
-    //public AIType behaviorType;
-    public int visionRange;
+    public EnemyType enemyType;
+    public int visionRange = 5;
 
-    public void TakeTurn(Player player)
+    // เมธอด TakeTurn ถูกลบไป เพราะไม่มี TurnManager มาเรียกใช้แล้ว
+    public abstract void DecideAction(Player player);
+}
+
+public class KnightEnemy : Enemy // Example Subclass
+{
+    protected override void Awake()
     {
-
+        base.Awake();
+        characterName = "Knight";
+        stats = new Status(15, 0, 4, 2);
     }
 
-    // เปลี่ยน void -> List ทีหลัง
-    public void DropLoot()
+    public override void DecideAction(Player player)
     {
-        
+        // Logic นี้จะไม่ถูกเรียกใช้จนกว่าจะมีการสร้าง TurnManager
+        if (Vector2Int.Distance(position, player.position) <= 1.5f) Attack(player);
+        else MoveTowards(player);
     }
 
-    public void DecideAction(Enemy self, Player player)
+    protected virtual void MoveTowards(Player target)
     {
-        
-    }
-
-    public void MoveToward(Player target)
-    {
-        
+        Vector2Int direction = new Vector2Int(
+            Mathf.Clamp(target.position.x - position.x, -1, 1),
+            Mathf.Clamp(target.position.y - position.y, -1, 1)
+        );
+        base.Move(direction);
     }
 }
