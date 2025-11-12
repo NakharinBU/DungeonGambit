@@ -472,7 +472,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentFloor: 1
   playerPrefab: {fileID: 2975489352503432100, guid: 4c033ef69eb269849bab9de975c465ed, type: 3}
-  enemyPrefabs: []
+  enemyPrefabs:
+  - {fileID: 1000010755293042, guid: 978fa2fb617654f5eaeff9da6fc7d116, type: 3}
   floorPrefab: {fileID: 106160, guid: 038998774947c4a8fa170d5b4492a7dd, type: 3}
   wallPrefab: {fileID: 110520, guid: b1361c167057d93419e387f0e521b453, type: 3}
   tileParent: {fileID: 0}

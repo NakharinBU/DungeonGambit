@@ -24,11 +24,28 @@ public class Character : MonoBehaviour
         combatSystem = CombatSystem.Instance();
     }
 
-    public virtual void Move(Vector2Int direction)
+    public virtual bool Move(Vector2Int direction)
     {
-        Debug.Log($"{characterName} moved to {position + direction}");
-        position += direction;
-        OnTurnEnd();
+        Vector2Int targetPos = position + direction;
+
+        Tile targetTile = dungeonManager.GetTile(targetPos.x, targetPos.y);
+        Character charAtTarget = dungeonManager.GetCharacterAtPosition(targetPos); // ตรวจสอบว่ามีตัวละครอื่นอยู่หรือไม่
+
+        // ตรวจสอบ: 1) อยู่ในขอบเขต, 2) เดินได้, 3) ไม่มีใครอยู่ (สำคัญ)
+        if (targetTile == null || !targetTile.IsWalkable() || charAtTarget != null)
+        {
+            return false; // เดินไม่ได้
+        }
+
+        // อัปเดตสถานะ Tile
+        dungeonManager.GetTile(position.x, position.y)?.SetOccupied(false);
+        position = targetPos;
+        dungeonManager.GetTile(position.x, position.y)?.SetOccupied(true);
+
+        // อัปเดตตำแหน่งใน World Space
+        transform.position = new Vector3(position.x, position.y, transform.position.z);
+
+        return true; // เดินสำเร็จ
     }
 
     public virtual void Attack(Character target)

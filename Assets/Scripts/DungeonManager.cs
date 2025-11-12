@@ -139,4 +139,34 @@ public class DungeonManager : MonoBehaviour
             childrenToDestroy.ForEach(Destroy);
         }
     }
+
+    public void ResolveEnemyTurn()
+    {
+        // ทำสำเนาของ List ศัตรูเพื่อป้องกันการแก้ไขขณะวนลูป (เช่น ศัตรูตาย)
+        foreach (var enemy in enemiesOnFloor.ToList())
+        {
+            if (enemy != null && currentPlayer != null)
+            {
+                // สั่งให้ศัตรูตัดสินใจและทำ Action
+                enemy.DecideAction(currentPlayer);
+            }
+        }
+    }
+
+    public void ShowAllEnemyIntent(Player player)
+    {
+        if (player == null) return;
+
+        TileHighlighter highlighter = player.GetComponent<TileHighlighter>();
+        if (highlighter == null) return;
+
+        foreach (var enemy in enemiesOnFloor.ToList())
+        {
+            if (enemy is Knight knight) // ตรวจสอบว่าเป็น Knight เท่านั้น
+            {
+                // ให้ Knight เป็นผู้สั่งให้ Highlighter แสดงผล
+                knight.ShowIntent(player, highlighter);
+            }
+        }
+    }
 }

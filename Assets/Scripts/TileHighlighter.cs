@@ -14,6 +14,8 @@ public class TileHighlighter : MonoBehaviour
     public Color exitColor = new Color(0f, 1f, 0f, 0.5f);   // เขียว (ทางออก)
     public Color wallColor = new Color(0.5f, 0.5f, 0.5f, 0.2f); // เทา (กำแพง/เดินไม่ได้)
 
+    public Color enemyPathColor = new Color(1f, 0.5f, 0f, 0.4f); // ส้ม (เส้นทางเดิน)
+
     private void Start()
     {
         // รับ Instance ของ DungeonManager เมื่อเกมเริ่ม
@@ -99,5 +101,89 @@ public class TileHighlighter : MonoBehaviour
 
             highlights.Add(highlight);
         }
+    }
+    public void ShowEnemyHighlights(Enemy enemy, Player player)
+    {
+
+
+        Vector2Int targetPos = player.position;
+        float distance = Vector2Int.Distance(enemy.position, targetPos);
+
+        // 1. ถ้าอยู่ในระยะโจมตี -> Highlight ช่อง Player เป็นสีแดง (Attack Highlight)
+        if (distance <= 1.5f)
+        {
+            // วาด Highlight สีแดงบนช่อง Player
+            GameObject attackHighlight = Instantiate(highlightPrefab, new Vector3(targetPos.x, targetPos.y, 0f), Quaternion.identity);
+            attackHighlight.GetComponent<SpriteRenderer>().color = enemyColor;
+            highlights.Add(attackHighlight);
+            return;
+        }
+
+        // 2. ถ้าอยู่ในระยะมองเห็น -> จำลองการเดิน (Path Highlight)
+        if (distance <= enemy.visionRange)
+        {
+            Vector2Int finalPos = SimulateKnightMove(enemy, targetPos);
+
+            // 3. วาด Highlight หากมีการเคลื่อนที่
+            if (finalPos != enemy.position)
+            {
+                GameObject pathHighlight = Instantiate(highlightPrefab, new Vector3(finalPos.x, finalPos.y, 0f), Quaternion.identity);
+                pathHighlight.GetComponent<SpriteRenderer>().color = enemyPathColor; // สีส้ม
+                highlights.Add(pathHighlight);
+            }
+        }
+    }
+
+    private Vector2Int SimulateKnightMove(Enemy enemy, Vector2Int targetPos)
+    {
+        Vector2Int finalPos = enemy.position;
+        Vector2Int direction = targetPos - finalPos;
+
+        // หา Int Sign
+        int moveX = (direction.x > 0) ? 1 : (direction.x < 0) ? -1 : 0;
+        int moveY = (direction.y > 0) ? 1 : (direction.y < 0) ? -1 : 0;
+
+        Vector2Int potentialMove = new Vector2Int(moveX, moveY);
+
+        // 1. ลองเดินแนวทแยงก่อน
+        if (potentialMove != Vector2Int.zero)
+        {
+            if (CanEnemyMoveTo(finalPos + potentialMove))
+            {
+                return finalPos + potentialMove;
+            }
+        }
+
+        // 2. ถ้าเดินแนวทแยงไม่สำเร็จ ให้ลองเดินแกน X
+        if (moveX != 0)
+        {
+            Vector2Int xMove = new Vector2Int(moveX, 0);
+            if (CanEnemyMoveTo(finalPos + xMove))
+            {
+                return finalPos + xMove;
+            }
+        }
+
+        // 3. ถ้าเดินแกน X ไม่สำเร็จ ให้ลองเดินแกน Y
+        if (moveY != 0)
+        {
+            Vector2Int yMove = new Vector2Int(0, moveY);
+            if (CanEnemyMoveTo(finalPos + yMove))
+            {
+                return finalPos + yMove;
+            }
+        }
+
+        return finalPos; // ไม่สามารถเคลื่อนที่ได้
+    }
+
+
+    private bool CanEnemyMoveTo(Vector2Int pos)
+    {
+        Tile targetTile = dungeonManager.GetTile(pos.x, pos.y);
+        Character charAtTarget = dungeonManager.GetCharacterAtPosition(pos);
+
+        // Enemy สามารถเดินไปในช่องที่ว่างและเดินได้เท่านั้น
+        return targetTile != null && targetTile.IsWalkable() && charAtTarget == null;
     }
 }

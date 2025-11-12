@@ -23,10 +23,12 @@ public class Player : Character
                 highlighter.ShowHighlights(this);
             }
 
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) Move(Vector2Int.up);
-            if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) Move(Vector2Int.down);
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) Move(Vector2Int.left);
-            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) Move(Vector2Int.right);
+            if (dungeonManager != null)
+            {
+                // เมธอดนี้จะวาดทับ Highlight ของ Player บนช่องที่ Knight จะไปถึง
+                dungeonManager.ShowAllEnemyIntent(this);
+            }
+
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -53,24 +55,23 @@ public class Player : Character
         return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     }
 
-    public override void Move(Vector2Int direction)
+    public override bool Move(Vector2Int direction)
     {
         Vector2Int targetPos = position + direction;
 
-        Character targetChar = dungeonManager.GetCharacterAtPosition(targetPos);
-        if (targetChar != null && targetChar is Enemy enemy)
+        // 2. เรียก Base Move (จัดการการเดินจริงและการตรวจสอบ Wall/Occupied)
+        bool moveSuccess = base.Move(direction);
+
+        if (moveSuccess)
         {
-            Attack(enemy);
-            return;
+            // ถ้าเดินสำเร็จ (True) ให้สั่งให้ศัตรูเดินต่อ
+            dungeonManager.ResolveEnemyTurn();
+
+            Vector3 targetWorldPos = new Vector3(position.x, position.y, transform.position.z);
+            StartCoroutine(MoveSmoothly(targetWorldPos));
         }
 
-        Tile targetTile = dungeonManager.GetTile(targetPos.x, targetPos.y);
-        if (targetTile == null || !targetTile.IsWalkable() || targetTile.IsOccupied) return;
-
-        base.Move(direction);
-
-        Vector3 targetWorldPos = new Vector3(position.x, position.y, transform.position.z);
-        StartCoroutine(MoveSmoothly(targetWorldPos));
+        return moveSuccess; // คืนค่า True/False ตามผลลัพธ์การเดิน
     }
 
     IEnumerator MoveSmoothly(Vector3 target)
