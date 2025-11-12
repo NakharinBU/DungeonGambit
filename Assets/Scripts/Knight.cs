@@ -8,7 +8,7 @@ public class Knight : Enemy
     {
         base.Awake();
         characterName = "Knight";
-        stats = new Status(5, 0, 4, 2);
+        stats = GetComponent<Status>();
     }
 
     public override bool MoveTowards(Vector2Int targetPos)

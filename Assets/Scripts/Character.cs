@@ -11,17 +11,15 @@ public class Character : MonoBehaviour
     public Status Stats => stats;
 
     protected DungeonManager dungeonManager;
-    protected CombatSystem combatSystem;
 
     protected virtual void Awake()
     {
-        if (stats == null) stats = new Status(10, 5, 3, 1);
+        
     }
 
     protected virtual void Start()
     {
         dungeonManager = DungeonManager.Instance;
-        combatSystem = CombatSystem.Instance();
     }
 
     public virtual bool Move(Vector2Int direction)
@@ -50,22 +48,34 @@ public class Character : MonoBehaviour
 
     public virtual void Attack(Character target)
     {
-        if (target == null) return;
-        int damage = combatSystem.CalculateDamage(this, target);
-        Debug.Log($"{characterName} โจมตี {target.characterName} สร้างความเสียหาย {damage}!");
-        target.TakeDamage(damage);
-        OnTurnEnd();
+        if (CombatSystem.Instance != null)
+        {
+            CombatSystem.Instance.ProcessAttack(this, target);
+        }
+        else
+        {
+            Debug.LogError("CombatSystem not found! Attack failed.");
+        }
     }
 
     public virtual void TakeDamage(int amount)
     {
         stats.hp -= amount;
-        if (stats.hp <= 0) Die();
+
+        Debug.Log($"{characterName} took {amount} damage. Remaining HP: {stats.hp}");
+
+        if (stats.hp <= 0)
+        {
+            Die();
+        }
     }
 
-    protected virtual void Die()
+    public virtual void Die()
     {
+        Player player = FindFirstObjectByType<Player>();
+        player?.GetComponent<TileHighlighter>()?.ClearHighlights();
         Debug.Log($"{characterName} ถูกกำจัดแล้ว!");
+
         Destroy(gameObject);
     }
 

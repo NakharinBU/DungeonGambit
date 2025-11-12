@@ -78,12 +78,6 @@ public class TileHighlighter : MonoBehaviour
             }
             else if (tileData.IsWalkable())
             {
-                // ถ้า Tile Data บอกว่าเดินได้ และไม่มี Actor
-                // อาจต้องตรวจสอบ TileType.Exit ด้วย
-                // (ปัจจุบัน Tile Data ไม่มี public property สำหรับ TileType, แต่สมมติว่ามี)
-
-                // if (tileData.Type == TileType.Exit) sr.color = exitColor; // ต้องมีการเข้าถึง TileType
-                // else sr.color = emptyColor;
                 sr.color = emptyColor; // Default
             }
             Color c = sr.color;

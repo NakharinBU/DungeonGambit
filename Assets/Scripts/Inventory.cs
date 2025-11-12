@@ -5,7 +5,7 @@ using static EnumData;
 public class Inventory : MonoBehaviour
 {
 
-    private List<Item> items = new List<Item>();
+    private List<ItemData> items = new List<ItemData>();
     private int capacity;
 
     public Inventory(int initialCapacity = 20)
@@ -13,8 +13,7 @@ public class Inventory : MonoBehaviour
         capacity = initialCapacity;
     }
 
-
-    public bool AddItem(Item item)
+    public bool AddItem(ItemData item)
     {
         if (items.Count >= capacity)
         {
@@ -22,24 +21,25 @@ public class Inventory : MonoBehaviour
             return false;
         }
         items.Add(item);
+        Debug.Log($"Added item: {item.itemName}. Inventory size: {items.Count}");
         return true;
     }
 
 
-    public bool RemoveItem(Item item)
+    public bool RemoveItem(ItemData item)
     {
         return items.Remove(item);
     }
 
 
-    public Item GetItemByType(ItemType type)
+    public ItemData GetItemByType(ItemType type)
     {
         return items.Find(i => i.Type == type);
     }
 
 
-    public List<Item> GetAllItems()
+    public List<ItemData> GetAllItems()
     {
-        return new List<Item>(items);
+        return new List<ItemData>(items);
     }
 }

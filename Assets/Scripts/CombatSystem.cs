@@ -2,26 +2,38 @@ using UnityEngine;
 
 public class CombatSystem : MonoBehaviour
 {
+    public static CombatSystem Instance { get; private set; }
 
-    private static CombatSystem _instance;
-
-
-    public static CombatSystem Instance()
+    private void Awake()
     {
-        if (_instance == null)
-            _instance = new CombatSystem();
-        return _instance;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
-
-    private CombatSystem() { }
-
-    public int CalculateDamage(Character attacker, Character defender)
+    public void ProcessAttack(Character attacker, Character target)
     {
-        // int damage = attacker.Status.atk - defender.Status.def; 
+        // 1. ตรวจสอบว่า target ยังมีชีวิตอยู่หรือไม่
+        if (target.stats.hp <= 0) return;
 
-        // if (damage < 1) damage = 1; 
-        // return damage;
-        return 10; // ค่า Mock ไว้ก่อน
+        // 2. คำนวณความเสียหาย
+        int damage = attacker.stats.atk;
+
+        // 3. เรียกเมธอดรับความเสียหาย
+        target.TakeDamage(damage);
+
+        // 4. แสดงผลลัพธ์
+        Debug.Log($"{attacker.characterName} attacked {target.characterName} for {damage} damage.");
+
+        // 5. ตรวจสอบการตาย
+        if (target.stats.hp <= 0)
+        {
+            target.Die();
+        }
     }
 }

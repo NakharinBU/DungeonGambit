@@ -10,13 +10,12 @@ public class Status : MonoBehaviour
     public int maxMp;
     public int atk;
 
-    public Status(int health, int mana, int attack, int defense)
+    void Awake()
     {
-        maxHp = health;
-        hp = maxHp;
-        maxMp = mana;
-        mp = maxMp;
-        atk = attack;
+        if (hp == 0)
+        {
+            hp = maxHp;
+            mp = maxMp;
+        }
     }
-
 }

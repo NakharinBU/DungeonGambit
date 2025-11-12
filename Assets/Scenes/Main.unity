@@ -477,8 +477,54 @@ MonoBehaviour:
   floorPrefab: {fileID: 106160, guid: 038998774947c4a8fa170d5b4492a7dd, type: 3}
   wallPrefab: {fileID: 110520, guid: b1361c167057d93419e387f0e521b453, type: 3}
   tileParent: {fileID: 0}
+  chestPrefab: {fileID: 9218490108359249709, guid: 56fc2be8d8970c74c84565c59cdc12e7, type: 3}
+  MinSpawnDistance: 3
   MapWidth: 11
   MapHeight: 11
+--- !u!1 &1525644873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1525644875}
+  - component: {fileID: 1525644874}
+  m_Layer: 0
+  m_Name: CombatSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1525644874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525644873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9485908c31cc3543894a9ff90ab3756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1525644875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525644873}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.3894764, y: 7.586809, z: 535.47437}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2029215822
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,3 +579,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 2029215823}
   - {fileID: 1108368855}
+  - {fileID: 1525644875}

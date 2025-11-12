@@ -4,14 +4,23 @@ using UnityEngine;
 public class Player : Character
 {
     public Inventory inventory = new Inventory();
-    public CurrencyManager currencies = new CurrencyManager();
+    public CurrencyManager currencies;
     public bool isAutoMoving = false;
     public TileHighlighter highlighter;
-
-    private void Start()
+    
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         highlighter = GetComponent<TileHighlighter>();
+        stats = GetComponent<Status>();
+        if (currencies == null)
+        {
+            currencies = new CurrencyManager();
+        }
+        if (inventory == null)
+        {
+            inventory = new Inventory();
+        }
     }
 
     private void Update()
@@ -54,6 +63,26 @@ public class Player : Character
     {
         Vector2Int targetPos = position + direction;
 
+        Character targetChar = dungeonManager.GetCharacterAtPosition(targetPos);
+
+        InteractableObject interactableObject = dungeonManager.GetInteractableAtPosition(targetPos) as InteractableObject;
+
+        if (interactableObject != null)
+        {
+            interactableObject.Interact(this);
+        }
+
+        if (targetChar != null && targetChar is Enemy enemy)
+        {
+            Attack(enemy);
+
+            dungeonManager.ResolveEnemyTurn();
+
+            highlighter?.ClearHighlights();
+
+            return true; // Action สำเร็จแล้ว
+        }
+
         bool moveSuccess = base.Move(direction);
 
         if (moveSuccess)
@@ -63,6 +92,8 @@ public class Player : Character
             Vector3 targetWorldPos = new Vector3(position.x, position.y, transform.position.z);
             StartCoroutine(MoveSmoothly(targetWorldPos));
         }
+
+        highlighter?.ClearHighlights();
 
         return moveSuccess;
     }

@@ -24,8 +24,14 @@ public class DungeonManager : MonoBehaviour
     [Header("Parents")]
     public Transform tileParent;
 
+    public InteractableObject chestPrefab;
+    
+    public int MinSpawnDistance = 3;
+
     public int MapWidth = 10;
     public int MapHeight = 10;
+
+    private Dictionary<Vector2Int, InteractableObject> interactables = new Dictionary<Vector2Int, InteractableObject>();
 
     private void Awake()
     {
@@ -35,7 +41,6 @@ public class DungeonManager : MonoBehaviour
 
     public void GenerateFloor(int level)
     {
-        // 1. เคลียร์ฉากเก่า
         ClearFloor();
 
         map = new Tile[MapWidth, MapHeight];
@@ -47,7 +52,6 @@ public class DungeonManager : MonoBehaviour
             tileParent = new GameObject("TileParent").transform;
         }
 
-        // 2. สร้าง Data Grid (Tile Data) และ Visual Map
         for (int x = 0; x < MapWidth; x++)
         {
             for (int y = 0; y < MapHeight; y++)
@@ -70,9 +74,8 @@ public class DungeonManager : MonoBehaviour
             }
         }
 
-        // 3. Spawn Actors
         SpawnPlayer();
-        SpawnEnemies(level * 2);
+        SpawnEnemies(level);
     }
 
     private void SpawnPlayer()
@@ -92,14 +95,30 @@ public class DungeonManager : MonoBehaviour
     {
         if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
 
-        Vector2Int spawnPos = new Vector2Int(MapWidth - 2, MapHeight - 2);
+        enemiesOnFloor.Clear();
 
-        GameObject enemyObj = Instantiate(enemyPrefabs[0], new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
-        Enemy newEnemy = enemyObj.GetComponent<Enemy>();
-        newEnemy.position = spawnPos;
-        GetTile(spawnPos.x, spawnPos.y)?.SetOccupied(true);
-        enemiesOnFloor.Add(newEnemy);
-        newEnemy.name = $"ENEMY_{spawnPos.x},{spawnPos.y}";
+        for (int i = 0; i < count; i++)
+        {
+            Vector2Int spawnPos = GetValidEnemySpawnPosition(MinSpawnDistance);
+
+            if (spawnPos != Vector2Int.zero)
+            {
+                GameObject enemyPrefabToUse = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+
+                GameObject enemyObj = Instantiate(enemyPrefabToUse, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
+                Enemy newEnemy = enemyObj.GetComponent<Enemy>();
+
+                newEnemy.position = spawnPos;
+                GetTile(spawnPos.x, spawnPos.y)?.SetOccupied(true);
+                enemiesOnFloor.Add(newEnemy);
+                newEnemy.name = $"ENEMY_{i}_{spawnPos.x},{spawnPos.y}";
+            }
+            else
+            {
+                Debug.LogWarning("Could not find a valid spawn position for an enemy.");
+                break;
+            }
+        }
     }
 
     public Tile GetTile(int x, int y)
@@ -159,5 +178,174 @@ public class DungeonManager : MonoBehaviour
                 knight.ShowIntent(player, highlighter);
             }
         }
+    }
+
+    public void RemoveCharacter(Character character)
+    {
+        if (character is Enemy enemy)
+        {
+            if (enemiesOnFloor.Contains(enemy))
+            {
+                enemiesOnFloor.Remove(enemy);
+                Debug.Log($"Enemy {enemy.characterName} removed from tracking.");
+            }
+        }
+        else if (character is Player player)
+        {
+            Debug.Log("Game Over: Player has died.");
+        }
+
+    }
+
+    public IInteractable GetInteractableAtPosition(Vector2Int pos)
+    {
+        if (interactables.ContainsKey(pos))
+        {
+            return interactables[pos];
+        }
+        return null;
+    }
+
+    public void AddInteractable(InteractableObject obj, Vector2Int pos)
+    {
+        if (!interactables.ContainsKey(pos))
+        {
+            interactables.Add(pos, obj);
+            obj.position = pos;
+        }
+    }
+
+    public void RemoveInteractable(InteractableObject obj)
+    {
+        if (interactables.ContainsKey(obj.position))
+        {
+            interactables.Remove(obj.position);
+        }
+    }
+
+    public InteractableObject SpawnInteractable(InteractableObject prefab, Vector2Int pos)
+    {
+        Tile targetTile = GetTile(pos.x, pos.y);
+        if (targetTile == null)
+        {
+            Debug.LogWarning($"Spawn failed: Target tile at {pos} is outside map bounds.");
+            return null;
+        }
+
+        if (GetInteractableAtPosition(pos) != null)
+        {
+            Debug.LogWarning($"Spawn failed: Interactable already exists at {pos}.");
+            return null;
+        }
+
+        if (GetCharacterAtPosition(pos) != null)
+        {
+            Debug.LogWarning($"Spawn failed: Character already exists at {pos}.");
+            return null;
+        }
+
+        InteractableObject newObject = Instantiate(prefab, new Vector3(pos.x, pos.y, 0), Quaternion.identity);
+
+        newObject.Initialize(this);
+
+        AddInteractable(newObject, pos);
+
+        return newObject;
+    }
+
+    public void CheckLevelCompletion()
+    {
+        if (enemiesOnFloor.Count == 0)
+        {
+            Debug.Log("All enemies defeated! Spawning exit/reward chest.");
+            SpawnChest();
+        }
+    }
+    public void SpawnChest()
+    {
+        if (chestPrefab == null)
+        {
+            Debug.LogError("Chest Prefab is not assigned in DungeonManager!");
+            return;
+        }
+
+        if (interactables.Values.Any(obj => obj.GetType() == chestPrefab.GetType()))
+        {
+            return;
+        }
+
+        Vector2Int spawnPos = GetRandomEmptyWalkablePosition();
+
+        if (spawnPos != Vector2Int.zero)
+        {
+            SpawnInteractable(chestPrefab, spawnPos);
+            Debug.Log($"Chest spawned at {spawnPos}");
+        }
+        else
+        {
+            Debug.LogWarning("Could not find an empty tile to spawn the chest.");
+        }
+    }
+
+    private Vector2Int GetRandomEmptyWalkablePosition()
+    {
+        List<Vector2Int> validSpots = new List<Vector2Int>();
+
+        for (int x = 0; x < MapWidth; x++)
+        {
+            for (int y = 0; y < MapHeight; y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+
+                if (GetTile(x, y).IsWalkable() && GetCharacterAtPosition(pos) == null && GetInteractableAtPosition(pos) == null)
+                {
+                    validSpots.Add(pos);
+                }
+            }
+        }
+
+        if (validSpots.Count > 0)
+        {
+            return validSpots[Random.Range(0, validSpots.Count)];
+        }
+
+        return Vector2Int.zero;
+    }
+
+    private int GetManhattanDistance(Vector2Int p1, Vector2Int p2)
+    {
+        return Mathf.Abs(p1.x - p2.x) + Mathf.Abs(p1.y - p2.y);
+    }
+
+    private Vector2Int GetValidEnemySpawnPosition(int minDistanceToPlayer)
+    {
+        List<Vector2Int> potentialSpots = new List<Vector2Int>();
+        Vector2Int playerPos = currentPlayer != null ? currentPlayer.position : Vector2Int.zero;
+
+        for (int x = 0; x < MapWidth; x++)
+        {
+            for (int y = 0; y < MapHeight; y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+                Tile tile = GetTile(x, y);
+
+                if (tile.IsWalkable() &&
+                    GetCharacterAtPosition(pos) == null &&
+                    GetInteractableAtPosition(pos) == null)
+                {
+                    if (currentPlayer == null || GetManhattanDistance(pos, playerPos) >= minDistanceToPlayer)
+                    {
+                        potentialSpots.Add(pos);
+                    }
+                }
+            }
+        }
+
+        if (potentialSpots.Count > 0)
+        {
+            return potentialSpots[Random.Range(0, potentialSpots.Count)];
+        }
+
+        return Vector2Int.zero;
     }
 }

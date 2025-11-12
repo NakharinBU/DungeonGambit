@@ -1,29 +1,21 @@
 using UnityEngine;
 using static EnumData;
 
-public class Item : MonoBehaviour
+[CreateAssetMenu(fileName = "New Item Data", menuName = "Inventory/Item Data")]
+public abstract class ItemData : ScriptableObject
 {
+    [SerializeField] private int id;
+    public string itemName;
+    public ItemType type;
+    public int value;
+    public ItemEffect effect;
+    public Sprite icon;
 
-    private int id;
-    private string name;
-    private ItemType type;
-    private int value;
-    private ItemEffect effect;
-
-    public string Name => name;
+    public string Name => itemName;
     public ItemType Type => type;
     public int Value => value;
 
-    public Item(int id, string name, ItemType type, int value, ItemEffect effect)
-    {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.value = value;
-        this.effect = effect;
-    }
-
-    public void Use(Player target)
+    public virtual void Use(Player target)
     {
         if (type != ItemType.Consumable) return;
 
@@ -31,15 +23,13 @@ public class Item : MonoBehaviour
         {
             case ItemEffect.HealHP:
 
-                // target.Heal(value); 
+                target.Heal(value); 
                 Debug.Log($"{target.characterName} ใช้ {name} และฟื้นฟู HP {value} หน่วย");
                 break;
             case ItemEffect.RestoreMP:
-                // target.RestoreMana(value);
+                target.RestoreMana(value);
                 Debug.Log($"{target.characterName} ใช้ {name} และฟื้นฟู MP {value} หน่วย");
                 break;
-
-                // ... เพิ่ม ItemEffect อื่นๆ ที่นี่
         }
     }
 
