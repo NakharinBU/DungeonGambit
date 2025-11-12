@@ -8,7 +8,7 @@ public class Knight : Enemy
     {
         base.Awake();
         characterName = "Knight";
-        stats = new Status(5, 0, 4, 2); // ตั้งค่า Stat ตามที่คุณระบุ
+        stats = new Status(5, 0, 4, 2);
     }
 
     public override bool MoveTowards(Vector2Int targetPos)
@@ -17,13 +17,10 @@ public class Knight : Enemy
 
         if (direction.magnitude <= 1.5f) return false;
 
-        // ✅ FIX: ใช้ Logic Ternary Operator เพื่อให้ได้ค่า INT (-1, 0, 1) ที่ปลอดภัย
         int moveX = (direction.x > 0) ? 1 : (direction.x < 0) ? -1 : 0;
         int moveY = (direction.y > 0) ? 1 : (direction.y < 0) ? -1 : 0;
 
         Vector2Int potentialMove = new Vector2Int(moveX, moveY);
-
-        // เราให้ base.Move() ทำการตรวจสอบการชนทั้งหมดแล้ว
 
         // 1. ลองเดินแนวทแยงก่อน
         if (potentialMove != Vector2Int.zero)
@@ -55,7 +52,6 @@ public class Knight : Enemy
         return false; // เดินไม่ได้
     }
 
-    // ใน Knight.cs
     public override void DecideAction(Player player)
     {
         if (player == null) return;
@@ -88,10 +84,8 @@ public class Knight : Enemy
         Vector2Int playerPos = player.position;
         float distance = Vector2Int.Distance(position, playerPos);
 
-        // เราจะให้ ShowEnemyHighlights จัดการ Logic โจมตี/เดินเอง
         if (distance <= visionRange)
         {
-            // โค้ดนี้จะเรียกเมธอดใน TileHighlighter ที่เราต้องแก้ไขให้รับ Enemy และ Player
             highlighter.ShowEnemyHighlights(this, player);
         }
     }

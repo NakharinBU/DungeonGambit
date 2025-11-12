@@ -9,7 +9,7 @@ public class DungeonManager : MonoBehaviour
 
     private Tile[,] map;
     private List<Vector2Int> spawnPoints;
-    private List<Enemy> enemiesOnFloor = new List<Enemy>(); // ต้อง Initialize ตั้งแต่แรก
+    private List<Enemy> enemiesOnFloor = new List<Enemy>();
     private Player currentPlayer;
     public int currentFloor = 1;
 
@@ -58,7 +58,6 @@ public class DungeonManager : MonoBehaviour
 
                 map[x, y] = new Tile(new Vector2Int(x, y), type);
 
-                // Instantiate Visual Tile
                 GameObject tileToSpawn = (type == TileType.Wall) ? wallPrefab : floorPrefab;
                 if (tileToSpawn != null)
                 {
@@ -80,7 +79,6 @@ public class DungeonManager : MonoBehaviour
     {
         if (currentPlayer != null) return;
 
-        // ตำแหน่ง 1, 1 คือตำแหน่งเริ่มต้นที่ดี
         Vector2Int spawnPos = new Vector2Int(1, 1);
 
         GameObject playerObj = Instantiate(playerPrefab, new Vector3(spawnPos.x, spawnPos.y, -0.1f), Quaternion.identity);
@@ -94,7 +92,6 @@ public class DungeonManager : MonoBehaviour
     {
         if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
 
-        // วางศัตรูตัวแรกที่มุมตรงข้าม
         Vector2Int spawnPos = new Vector2Int(MapWidth - 2, MapHeight - 2);
 
         GameObject enemyObj = Instantiate(enemyPrefabs[0], new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
@@ -122,18 +119,14 @@ public class DungeonManager : MonoBehaviour
 
     public void ClearFloor()
     {
-        // ทำลาย Player
         if (currentPlayer != null) Destroy(currentPlayer.gameObject);
         currentPlayer = null;
 
-        // ทำลาย Enemy
         foreach (var enemy in enemiesOnFloor.ToList()) if (enemy != null) Destroy(enemy.gameObject);
         enemiesOnFloor.Clear();
 
-        // ทำลาย Visual Tiles
         if (tileParent != null)
         {
-            // ทำให้มั่นใจว่า Destroy ได้อย่างปลอดภัย
             List<GameObject> childrenToDestroy = new List<GameObject>();
             foreach (Transform child in tileParent) childrenToDestroy.Add(child.gameObject);
             childrenToDestroy.ForEach(Destroy);
@@ -142,7 +135,6 @@ public class DungeonManager : MonoBehaviour
 
     public void ResolveEnemyTurn()
     {
-        // ทำสำเนาของ List ศัตรูเพื่อป้องกันการแก้ไขขณะวนลูป (เช่น ศัตรูตาย)
         foreach (var enemy in enemiesOnFloor.ToList())
         {
             if (enemy != null && currentPlayer != null)
@@ -162,9 +154,8 @@ public class DungeonManager : MonoBehaviour
 
         foreach (var enemy in enemiesOnFloor.ToList())
         {
-            if (enemy is Knight knight) // ตรวจสอบว่าเป็น Knight เท่านั้น
+            if (enemy is Knight knight)
             {
-                // ให้ Knight เป็นผู้สั่งให้ Highlighter แสดงผล
                 knight.ShowIntent(player, highlighter);
             }
         }

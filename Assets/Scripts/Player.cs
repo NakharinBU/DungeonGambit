@@ -25,7 +25,6 @@ public class Player : Character
 
             if (dungeonManager != null)
             {
-                // เมธอดนี้จะวาดทับ Highlight ของ Player บนช่องที่ Knight จะไปถึง
                 dungeonManager.ShowAllEnemyIntent(this);
             }
 
@@ -35,10 +34,8 @@ public class Player : Character
                 Vector2Int targetPos = GetGridPositionFromMouse();
                 Vector2Int direction = targetPos - position;
 
-                // จำกัดการเคลื่อนที่ให้เป็น 1 ช่อง (หรือแนวทแยง 1 ช่อง)
                 if (direction.magnitude > 0 && Mathf.Abs(direction.x) <= 1 && Mathf.Abs(direction.y) <= 1)
                 {
-                    // Normalize direction (เช่น ถ้าคลิกไปที่ (x+1, y+1) จะ Move(1, 1))
                     direction.x = Mathf.Clamp(direction.x, -1, 1);
                     direction.y = Mathf.Clamp(direction.y, -1, 1);
                     Move(direction);
@@ -49,9 +46,7 @@ public class Player : Character
 
     private Vector2Int GetGridPositionFromMouse()
     {
-        // แปลงตำแหน่งเมาส์บนหน้าจอเป็นตำแหน่งใน World
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // แปลงเป็นตำแหน่ง Grid (ปัดเศษใกล้เคียง)
         return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     }
 
@@ -59,19 +54,17 @@ public class Player : Character
     {
         Vector2Int targetPos = position + direction;
 
-        // 2. เรียก Base Move (จัดการการเดินจริงและการตรวจสอบ Wall/Occupied)
         bool moveSuccess = base.Move(direction);
 
         if (moveSuccess)
         {
-            // ถ้าเดินสำเร็จ (True) ให้สั่งให้ศัตรูเดินต่อ
             dungeonManager.ResolveEnemyTurn();
 
             Vector3 targetWorldPos = new Vector3(position.x, position.y, transform.position.z);
             StartCoroutine(MoveSmoothly(targetWorldPos));
         }
 
-        return moveSuccess; // คืนค่า True/False ตามผลลัพธ์การเดิน
+        return moveSuccess;
     }
 
     IEnumerator MoveSmoothly(Vector3 target)

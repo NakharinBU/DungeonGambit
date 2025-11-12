@@ -66,7 +66,6 @@ public class Character : MonoBehaviour
     protected virtual void Die()
     {
         Debug.Log($"{characterName} ถูกกำจัดแล้ว!");
-        // Logic: Free Tile, Remove from list, Destroy GameObject
         Destroy(gameObject);
     }
 
