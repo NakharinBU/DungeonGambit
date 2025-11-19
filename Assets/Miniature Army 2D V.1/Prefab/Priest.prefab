@@ -363,6 +363,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4000013296727282}
   - component: {fileID: 95000010463452298}
+  - component: {fileID: 197420958504312911}
+  - component: {fileID: -8966722052866480580}
   m_Layer: 0
   m_Name: Priest
   m_TagString: Untagged
@@ -408,6 +410,44 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &197420958504312911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013034572668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6832fa9ad26198b409e78f8363686f9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterName: Base Character
+  stats: {fileID: -8966722052866480580}
+  position: {x: 0, y: 0}
+  enemyType: 0
+  visionRange: 10
+  possibleDrops: []
+  dropChance: 0.5
+  healRange: 1
+  avoidPlayerRange: 3
+--- !u!114 &-8966722052866480580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013034572668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8529cd5a475b10f459fc7547e1f06799, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 1
+  maxHp: 1
+  mp: 0
+  maxMp: 0
+  atk: 2
 --- !u!1 &1000013226060160
 GameObject:
   m_ObjectHideFlags: 0

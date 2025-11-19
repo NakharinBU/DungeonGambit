@@ -626,6 +626,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4000013306724104}
   - component: {fileID: 95000010572177686}
+  - component: {fileID: 6740924267917492445}
+  - component: {fileID: 5785269628151924748}
   m_Layer: 0
   m_Name: Thief
   m_TagString: Untagged
@@ -671,6 +673,42 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6740924267917492445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000012663239756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ab8bb497444b044fbc39ab13946ad86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterName: Base Character
+  stats: {fileID: 5785269628151924748}
+  position: {x: 0, y: 0}
+  enemyType: 0
+  visionRange: 5
+  possibleDrops: []
+  dropChance: 0.5
+--- !u!114 &5785269628151924748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000012663239756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8529cd5a475b10f459fc7547e1f06799, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 10
+  maxHp: 10
+  mp: 0
+  maxMp: 0
+  atk: 2
 --- !u!1 &1000012730742446
 GameObject:
   m_ObjectHideFlags: 0
