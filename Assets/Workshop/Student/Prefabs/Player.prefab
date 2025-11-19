@@ -154,11 +154,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8529cd5a475b10f459fc7547e1f06799, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 20
+  hp: 10
   maxHp: 20
   mp: 0
   maxMp: 15
-  atk: 5
+  atk: 1
 --- !u!114 &-6662841605371068307
 MonoBehaviour:
   m_ObjectHideFlags: 0

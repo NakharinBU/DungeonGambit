@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
         else if (CurrentFloor >= 2 && CurrentFloor <= 5) sceneName = $"Floor{CurrentFloor}";
         else
         {
-            sceneName = "Mainmenu";
+            sceneName = "EndCredit";
             CurrentFloor = 1;
         }
 
