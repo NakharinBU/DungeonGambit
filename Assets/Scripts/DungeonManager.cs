@@ -180,6 +180,18 @@ public class DungeonManager : MonoBehaviour
             {
                 knight.ShowIntent(player, highlighter);
             }
+            if (enemy is Archer archer)
+            {
+                archer.ShowIntent(player, highlighter);
+            }
+            if (enemy is Bishop bishop)
+            {
+                bishop.ShowIntent(player, highlighter);
+            }
+            if (enemy is Boss boss)
+            {
+                boss.ShowIntent(player, highlighter);
+            }
         }
     }
 

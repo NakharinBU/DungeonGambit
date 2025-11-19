@@ -150,4 +150,16 @@ public class Bishop : Enemy
         // แต่ต้องใส่เพื่อ override abstract
         return false;
     }
+    public void ShowIntent(Player player, TileHighlighter highlighter)
+    {
+        if (player == null || highlighter == null) return;
+
+        Vector2Int playerPos = player.position;
+        float distance = Vector2Int.Distance(position, playerPos);
+
+        if (distance <= visionRange)
+        {
+            highlighter.ShowEnemyHighlights(this, player);
+        }
+    }
 }

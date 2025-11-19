@@ -120,7 +120,8 @@ MonoBehaviour:
   stats: {fileID: 0}
   position: {x: 0, y: 0}
   inventory: {fileID: 0}
-  currencies: {fileID: 0}
+  currencies:
+    availableUpgrades: []
   isAutoMoving: 0
   highlighter: {fileID: -7549262767454066059, guid: f86745dbd00c9f846858a728cd95d610, type: 3}
 --- !u!114 &572413281017347314
@@ -153,8 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8529cd5a475b10f459fc7547e1f06799, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 3
-  maxHp: 3
+  hp: 20
+  maxHp: 20
   mp: 0
   maxMp: 15
   atk: 1

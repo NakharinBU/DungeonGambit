@@ -62,7 +62,7 @@ public class Knight : Enemy
         float distance = Vector2Int.Distance(position, playerPos);
 
         // 1. ACTION: โจมตี
-        if (distance <= 1.5f)
+        if (distance <= 1f)
         {
             Attack(player);
         }
