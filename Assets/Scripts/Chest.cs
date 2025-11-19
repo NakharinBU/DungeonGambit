@@ -17,6 +17,14 @@ public class Chest : InteractableObject
             return;
         }
 
+
+        if (player.inventory == null) // **FIX 3: ป้องกัน Crash ถ้า Inventory หลุดไป**
+        {
+            Debug.LogError("Player Inventory is Null! Cannot add items from chest.");
+            return;
+        }
+
+
         if (contents.Count > 0)
         {
             Debug.Log($"Player opened the chest and found {contents.Count} items!");
@@ -34,7 +42,11 @@ public class Chest : InteractableObject
 
             if (openedSprite != null)
             {
-                GetComponent<SpriteRenderer>().sprite = openedSprite;
+                SpriteRenderer sr = GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.sprite = openedSprite;
+                }
             }
         }
         else

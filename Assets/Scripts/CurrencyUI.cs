@@ -40,8 +40,21 @@ public class CurrencyUI : MonoBehaviour
     {
         if (textComponent != null)
         {
-            string symbol = (type == CurrencyType.Gold) ? "G" : "S";
-            textComponent.text = $"Gold: {value} {symbol}";
+            if (type == CurrencyType.Gold)
+            {
+                string symbol = (type == CurrencyType.Gold) ? "G" : "N";
+                textComponent.text = $"Gold: {value} {symbol}";
+            }
+            if (type == CurrencyType.SoulPoint)
+            {
+                string symbol = (type == CurrencyType.SoulPoint) ? "S" : "N";
+                textComponent.text = $"Soul: {value} {symbol}";
+            }
+            if (type == CurrencyType.UndoPoint)
+            {
+                string symbol = (type == CurrencyType.UndoPoint) ? "U" : "N";
+                textComponent.text = $"Undo: {value} {symbol}";
+            }
         }
     }
 

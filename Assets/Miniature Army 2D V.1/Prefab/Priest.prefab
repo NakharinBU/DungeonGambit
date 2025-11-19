@@ -427,9 +427,11 @@ MonoBehaviour:
   position: {x: 0, y: 0}
   enemyType: 0
   visionRange: 10
-  possibleDrops: []
+  possibleDrops:
+  - itemPrefab: {fileID: 6874260510649107500, guid: 19ba93584772ee44184c932f4ac6ab90, type: 3}
+    dropChance: 0.5
   dropChance: 0.5
-  healRange: 1
+  healRange: 2
   avoidPlayerRange: 3
 --- !u!114 &-8966722052866480580
 MonoBehaviour:

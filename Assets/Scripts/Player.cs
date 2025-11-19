@@ -3,16 +3,31 @@ using UnityEngine;
 
 public class Player : Character
 {
-    public Inventory inventory = new Inventory();
+    public static Player Instance { get; private set; }
+    public Inventory inventory;
     public CurrencyManager currencies;
     public bool isAutoMoving = false;
     public TileHighlighter highlighter;
-    
+
+    public DungeonManager DungeonManagerRef
+    {
+        get
+        {
+            return GameManager.Instance?.dungeonManager;
+        }
+    }
+
     protected override void Awake()
     {
         base.Awake();
         highlighter = GetComponent<TileHighlighter>();
         stats = GetComponent<Status>();
+        inventory = GetComponent<Inventory>();
+
+
+        if (stats == null) stats = GetComponent<Status>();
+        if (currencies == null) currencies = new CurrencyManager();
+
         if (currencies == null)
         {
             currencies = new CurrencyManager();
@@ -21,20 +36,32 @@ public class Player : Character
         {
             inventory = new Inventory();
         }
+
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
+        DontDestroyOnLoad(gameObject);
+
     }
 
     private void Update()
     {
         if (!isAutoMoving)
         {
-            if (highlighter != null)
+            if (highlighter != null && DungeonManagerRef != null)
             {
-                highlighter.ShowHighlights(this);
+                highlighter.ShowHighlights(this); // Tile Highlight
             }
 
-            if (dungeonManager != null)
+            // **FIX 4: สั่งแสดง Enemy Intent**
+            if (DungeonManagerRef != null)
             {
-                dungeonManager.ShowAllEnemyIntent(this);
+                DungeonManagerRef.ShowAllEnemyIntent(this); // Enemy Intent (ทำให้ Enemy "แสดง" การเดิน)
             }
 
 
@@ -61,22 +88,27 @@ public class Player : Character
 
     public override bool Move(Vector2Int direction)
     {
+        DungeonManager dm = DungeonManager.Instance;
+        if (dm == null) return false;
+
+
+        if (currencies == null) currencies = new CurrencyManager();
+        if (inventory == null) inventory = new Inventory();
+
         Vector2Int targetPos = position + direction;
+        Character targetChar = dm.GetCharacterAtPosition(targetPos);
+        Tile targetTile = dm.GetTile(targetPos.x, targetPos.y);
 
-        Character targetChar = dungeonManager.GetCharacterAtPosition(targetPos);
-
-        InteractableObject interactableObject = dungeonManager.GetInteractableAtPosition(targetPos) as InteractableObject;
-
-        if (interactableObject != null)
+        if (targetTile == null || !targetTile.IsWalkable())
         {
-            interactableObject.Interact(this);
+            return false; // ติดกำแพง
         }
 
         if (targetChar != null && targetChar is Enemy enemy)
         {
             Attack(enemy);
 
-            dungeonManager.ResolveEnemyTurn();
+            DungeonManagerRef.ResolveEnemyTurn();
 
             highlighter?.ClearHighlights();
 
@@ -87,13 +119,23 @@ public class Player : Character
 
         if (moveSuccess)
         {
-            dungeonManager.ResolveEnemyTurn();
+            InteractableObject interactableObject = dm.GetInteractableAtPosition(targetPos) as InteractableObject;
+
+            if (interactableObject != null)
+            {
+                interactableObject.Interact(this);
+            }
+
+            DungeonManagerRef.ResolveEnemyTurn();
 
             Vector3 targetWorldPos = new Vector3(position.x, position.y, transform.position.z);
             StartCoroutine(MoveSmoothly(targetWorldPos));
         }
 
-        highlighter?.ClearHighlights();
+        if (highlighter != null)
+        {
+            highlighter.ClearHighlights();
+        }
 
         return moveSuccess;
     }

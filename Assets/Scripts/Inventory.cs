@@ -6,11 +6,11 @@ public class Inventory : MonoBehaviour
 {
 
     private List<ItemData> items = new List<ItemData>();
-    private int capacity;
+    [SerializeField] private int capacity = 20;
 
-    public Inventory(int initialCapacity = 20)
+    private void Awake()
     {
-        capacity = initialCapacity;
+        if (items == null) items = new List<ItemData>();
     }
 
     public bool AddItem(ItemData item)

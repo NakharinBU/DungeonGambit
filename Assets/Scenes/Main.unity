@@ -956,12 +956,12 @@ MonoBehaviour:
   currentFloor: 1
   playerPrefab: {fileID: 2975489352503432100, guid: 4c033ef69eb269849bab9de975c465ed, type: 3}
   enemyPrefabs:
-  - {fileID: 1000012663239756, guid: 13c470c5b8dcd4854834911f7e0a9a6c, type: 3}
   - {fileID: 1000010755293042, guid: 978fa2fb617654f5eaeff9da6fc7d116, type: 3}
   floorPrefab: {fileID: 106160, guid: 038998774947c4a8fa170d5b4492a7dd, type: 3}
   wallPrefab: {fileID: 110520, guid: b1361c167057d93419e387f0e521b453, type: 3}
   tileParent: {fileID: 0}
   chestPrefab: {fileID: 9218490108359249709, guid: 56fc2be8d8970c74c84565c59cdc12e7, type: 3}
+  exitPrefab: {fileID: 2546711881923725053, guid: 317b12239e5391c4596a368f330b2fb6, type: 3}
   MinSpawnDistance: 3
   MapWidth: 11
   MapHeight: 11

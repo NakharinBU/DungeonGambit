@@ -8,6 +8,19 @@ public class TileHighlighter : MonoBehaviour
     private List<GameObject> highlights = new List<GameObject>();
     private DungeonManager dungeonManager;
 
+    private DungeonManager DungeonManagerRef
+    {
+        get
+        {
+            if (dungeonManager == null)
+            {
+                dungeonManager = DungeonManager.Instance;
+            }
+            return dungeonManager;
+        }
+    }
+
+
     [Header("Highlight Colors")]
     public Color emptyColor = new Color(0f, 0.6f, 1f, 0.4f); // น้ำเงิน (เดินได้)
     public Color enemyColor = new Color(1f, 0f, 0f, 0.5f);  // แดง (โจมตี)
@@ -15,15 +28,6 @@ public class TileHighlighter : MonoBehaviour
     public Color wallColor = new Color(0.5f, 0.5f, 0.5f, 0.2f); // เทา (กำแพง/เดินไม่ได้)
 
     public Color enemyPathColor = new Color(1f, 0.5f, 0f, 0.4f); // ส้ม (เส้นทางเดิน)
-
-    private void Start()
-    {
-        dungeonManager = DungeonManager.Instance;
-        if (dungeonManager == null)
-        {
-            Debug.LogError("DungeonManager not found! Cannot highlight tiles.");
-        }
-    }
 
     public void ClearHighlights()
     {
@@ -36,7 +40,7 @@ public class TileHighlighter : MonoBehaviour
 
     public void ShowHighlights(Player player)
     {
-        if (dungeonManager == null) return;
+        if (DungeonManagerRef == null) return;
 
         ClearHighlights();
 
@@ -54,7 +58,7 @@ public class TileHighlighter : MonoBehaviour
         {
             Vector2Int checkPos = playerPos + dir;
 
-            Tile tileData = dungeonManager.GetTile(checkPos.x, checkPos.y);
+            Tile tileData = DungeonManagerRef.GetTile(checkPos.x, checkPos.y);
 
             if (tileData == null) continue;
 
@@ -64,7 +68,7 @@ public class TileHighlighter : MonoBehaviour
             var sr = highlight.GetComponent<SpriteRenderer>();
 
             // ตรวจสอบว่ามี Actor อยู่หรือไม่
-            Character characterAtPos = dungeonManager.GetCharacterAtPosition(checkPos);
+            Character characterAtPos = DungeonManagerRef.GetCharacterAtPosition(checkPos);
 
             if (characterAtPos != null && characterAtPos is Enemy)
             {

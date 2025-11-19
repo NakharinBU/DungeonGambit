@@ -25,13 +25,28 @@ public class DungeonManager : MonoBehaviour
     public Transform tileParent;
 
     public InteractableObject chestPrefab;
-    
+    public InteractableObject exitPrefab;
+
     public int MinSpawnDistance = 4;
 
     public int MapWidth = 10;
     public int MapHeight = 10;
 
     private Dictionary<Vector2Int, InteractableObject> interactables = new Dictionary<Vector2Int, InteractableObject>();
+
+    private void Start()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.dungeonManager = this;
+
+            GenerateFloor(GameManager.Instance.CurrentFloor);
+        }
+        else
+        {
+            Debug.LogError("GameManager not found! Dungeon cannot be generated.");
+        }
+    }
 
     private void Awake()
     {
@@ -83,14 +98,26 @@ public class DungeonManager : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        if (currentPlayer != null) return;
+        currentPlayer = Player.Instance;
+        Vector2Int playerSpawnPos = new Vector2Int(1, 1);
 
-        Vector2Int spawnPos = new Vector2Int(1, 1);
+        if (currentPlayer != null)
+        {
+            currentPlayer.position = playerSpawnPos;
+            currentPlayer.transform.position = new Vector3(playerSpawnPos.x, playerSpawnPos.y, -0.1f);
+            Tile spawnTile = GetTile(playerSpawnPos.x, playerSpawnPos.y);
+            if (spawnTile != null)
+            {
+                spawnTile.SetOccupied(true);
+            }
+            currentPlayer.highlighter?.ShowHighlights(currentPlayer);
+            return;
+        }
 
-        GameObject playerObj = Instantiate(playerPrefab, new Vector3(spawnPos.x, spawnPos.y, -0.1f), Quaternion.identity);
+        GameObject playerObj = Instantiate(playerPrefab, new Vector3(playerSpawnPos.x, playerSpawnPos.y, -0.1f), Quaternion.identity);
         currentPlayer = playerObj.GetComponent<Player>();
-        currentPlayer.position = spawnPos;
-        GetTile(spawnPos.x, spawnPos.y)?.SetOccupied(true);
+        currentPlayer.position = playerSpawnPos;
+        GetTile(playerSpawnPos.x, playerSpawnPos.y)?.SetOccupied(true);
         currentPlayer.name = "PLAYER";
     }
 
@@ -161,7 +188,6 @@ public class DungeonManager : MonoBehaviour
         {
             if (enemy != null && currentPlayer != null)
             {
-                // สั่งให้ศัตรูตัดสินใจและทำ Action
                 enemy.DecideAction(currentPlayer);
             }
         }
@@ -274,6 +300,7 @@ public class DungeonManager : MonoBehaviour
         {
             Debug.Log("All enemies defeated! Spawning exit/reward chest.");
             SpawnChest();
+            SpawnExit();
         }
     }
     public void SpawnChest()
@@ -381,6 +408,32 @@ public class DungeonManager : MonoBehaviour
         else
         {
             Debug.LogError("Player not found when trying to setup Currency UI!");
+        }
+    }
+
+    public void SpawnExit()
+    {
+        if (exitPrefab == null)
+        {
+            Debug.LogError("Exit Prefab is not assigned in DungeonManager!");
+            return;
+        }
+
+        if (interactables.Values.Any(obj => obj.GetType() == exitPrefab.GetType()))
+        {
+            return;
+        }
+
+        Vector2Int exitSpawnPos = GetRandomEmptyWalkablePosition();
+
+        if (exitSpawnPos != Vector2Int.zero)
+        {
+            SpawnInteractable(exitPrefab, exitSpawnPos);
+            Debug.Log($"Exit spawned at {exitSpawnPos}");
+        }
+        else
+        {
+            Debug.LogWarning("Could not find an empty tile to spawn the chest.");
         }
     }
 }
