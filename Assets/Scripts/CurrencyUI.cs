@@ -53,7 +53,7 @@ public class CurrencyUI : MonoBehaviour
             if (type == CurrencyType.UndoPoint)
             {
                 string symbol = (type == CurrencyType.UndoPoint) ? "U" : "N";
-                textComponent.text = $"Undo: {value} {symbol}";
+                textComponent.text = $"Undo: 3 {symbol}";
             }
         }
     }

@@ -299,6 +299,17 @@ public class DungeonManager : MonoBehaviour
         if (enemiesOnFloor.Count == 0)
         {
             Debug.Log("All enemies defeated! Spawning exit/reward chest.");
+            int soulRewardAmount = currentFloor;
+
+            Player player = Player.Instance;
+
+            if (player != null && player.currencies != null)
+            {
+                player.currencies.Add(EnumData.CurrencyType.SoulPoint, soulRewardAmount);
+
+                Debug.Log($"Floor Clear! Player rewarded with {soulRewardAmount} Soul Points.");
+            }
+
             SpawnChest();
             SpawnExit();
         }

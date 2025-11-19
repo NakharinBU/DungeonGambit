@@ -30,10 +30,12 @@ public class CurrencyManager
                 break;
             case CurrencyType.SoulPoint:
                 soulPoint += amount;
+                OnCurrencyChanged?.Invoke(CurrencyType.SoulPoint, soulPoint);
                 Debug.Log($"Added {amount} Soul Points. Total: {soulPoint}");
                 break;
             case CurrencyType.UndoPoint:
                 undoPoint += amount;
+                OnCurrencyChanged?.Invoke(CurrencyType.UndoPoint, undoPoint);
                 Debug.Log($"Added {amount} Undo Points. Total: {undoPoint}");
                 break;
         }
