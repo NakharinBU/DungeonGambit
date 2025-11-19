@@ -158,7 +158,7 @@ MonoBehaviour:
   maxHp: 20
   mp: 0
   maxMp: 15
-  atk: 1
+  atk: 5
 --- !u!114 &-6662841605371068307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,3 +171,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f0fb9c7a2fbbf418e0053d31cfed3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  capacity: 20
