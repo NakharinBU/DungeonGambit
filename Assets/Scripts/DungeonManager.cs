@@ -172,9 +172,7 @@ public class DungeonManager : MonoBehaviour
     public Player GetPlayer() => currentPlayer;
     public Character GetCharacterAtPosition(Vector2Int pos)
     {
-        // ตรวจสอบ Player
         if (currentPlayer != null && currentPlayer.position == pos) return currentPlayer;
-        // ตรวจสอบ Enemy
         return enemiesOnFloor.Find(e => e != null && e.position == pos);
     }
 

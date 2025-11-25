@@ -1,8 +1,13 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class Character : MonoBehaviour
 {
+
+    public event Action<int, int> OnHealthChanged;
+    public event Action<int, int> OnManaChanged;
+
     [Header("Character Info")]
     public string characterName = "Base Character";
     public Status stats;
@@ -14,7 +19,12 @@ public class Character : MonoBehaviour
 
     protected virtual void Awake()
     {
-        
+        if (stats == null)
+        {
+            stats = new Status();
+        }
+        stats.hp = stats.maxHp;
+        stats.mp = 0;
     }
 
     protected virtual void Start()
@@ -27,23 +37,20 @@ public class Character : MonoBehaviour
         Vector2Int targetPos = position + direction;
 
         Tile targetTile = dungeonManager.GetTile(targetPos.x, targetPos.y);
-        Character charAtTarget = dungeonManager.GetCharacterAtPosition(targetPos); // ตรวจสอบว่ามีตัวละครอื่นอยู่หรือไม่
+        Character charAtTarget = dungeonManager.GetCharacterAtPosition(targetPos);
 
-        // ตรวจสอบ: 1) อยู่ในขอบเขต, 2) เดินได้, 3) ไม่มีใครอยู่ (สำคัญ)
         if (targetTile == null || !targetTile.IsWalkable() || charAtTarget != null)
         {
-            return false; // เดินไม่ได้
+            return false;
         }
 
-        // อัปเดตสถานะ Tile
         dungeonManager.GetTile(position.x, position.y)?.SetOccupied(false);
         position = targetPos;
         dungeonManager.GetTile(position.x, position.y)?.SetOccupied(true);
 
-        // อัปเดตตำแหน่งใน World Space
         transform.position = new Vector3(position.x, position.y, transform.position.z);
 
-        return true; // เดินสำเร็จ
+        return true;
     }
 
     public virtual void Attack(Character target)
@@ -63,6 +70,8 @@ public class Character : MonoBehaviour
         stats.hp -= amount;
 
         Debug.Log($"{characterName} took {amount} damage. Remaining HP: {stats.hp}");
+
+        OnHealthChanged?.Invoke(stats.hp, stats.maxHp);
 
         if (stats.hp <= 0)
         {
@@ -90,16 +99,21 @@ public class Character : MonoBehaviour
     {
         if (stats.mp < cost) return false;
         stats.mp -= cost;
+
+        OnManaChanged?.Invoke(stats.mp, stats.maxMp);
+
         return true;
     }
 
     public virtual void RestoreMana(int amount)
     {
         stats.mp = Mathf.Min(stats.mp + amount, stats.maxMp);
+        OnManaChanged?.Invoke(stats.mp, stats.maxMp);
     }
 
     public virtual void Heal(int amount)
     {
         stats.hp = Mathf.Min(stats.hp + amount, stats.maxHp);
+        OnHealthChanged?.Invoke(stats.hp, stats.maxHp);
     }
 }
