@@ -1,12 +1,13 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static EnumData;
 
 public class Inventory : MonoBehaviour
 {
 
     private List<ItemData> items = new List<ItemData>();
-    [SerializeField] private int capacity = 20;
+    [SerializeField] private int capacity = 12;
 
     private void Awake()
     {
@@ -17,7 +18,7 @@ public class Inventory : MonoBehaviour
     {
         if (items.Count >= capacity)
         {
-            Debug.Log("���������!");
+            Debug.Log("¡ÃÐà»ëÒàµçÁ!");
             return false;
         }
         items.Add(item);
@@ -41,5 +42,32 @@ public class Inventory : MonoBehaviour
     public List<ItemData> GetAllItems()
     {
         return new List<ItemData>(items);
+    }
+
+    public GameObject inventoryUI;
+
+    private bool isOpen = false;
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ToggleInventory();
+        }
+    }
+    void ToggleInventory()
+    {
+        isOpen = !isOpen;
+        inventoryUI.SetActive(isOpen);
+
+        // หยุด/ปล่อยการควบคุม Player เมื่อเปิดเมนู
+        if (isOpen)
+            Time.timeScale = 0f; // หยุดเกมถ้าต้องการ
+        else
+            Time.timeScale = 1f;
+
+        // ปิดเมาส์ล็อค ถ้ามีระบบ FPS
+        //Cursor.visible = isOpen;
+        //Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
     }
 }
