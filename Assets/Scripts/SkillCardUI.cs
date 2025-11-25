@@ -44,6 +44,7 @@ public class SkillCardUI : MonoBehaviour
     {
         if (currentCard != null)
         {
+            Debug.Log($"Selected Card: {currentCard.cardName}, Skill Asset: {currentCard.skillAsset?.skillName}");
             SkillUpgrade.Instance.SelectCard(currentCard);
         }
     }

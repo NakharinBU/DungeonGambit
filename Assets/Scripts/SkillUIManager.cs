@@ -35,11 +35,6 @@ public class SkillUIManager : MonoBehaviour
         slotE.hotkey = KeyCode.E;
 
         SetupUI(Player.Instance);
-
-        if (Player.Instance == null)
-        {
-            Debug.LogError("[SETUP] Player.Instance is NULL when SkillUIManager starts.");
-        }
     }
 
     public void SetupUI(Player player)

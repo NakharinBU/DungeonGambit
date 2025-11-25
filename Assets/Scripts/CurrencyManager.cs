@@ -47,13 +47,13 @@ public class CurrencyManager
         switch (type)
         {
             case CurrencyType.Gold:
-                if (gold >= amount) { gold -= amount; return true; }
+                if (gold >= amount) { gold -= amount; OnCurrencyChanged?.Invoke(CurrencyType.Gold, gold); return true; }
                 break;
             case CurrencyType.SoulPoint:
-                if (soulPoint >= amount) { soulPoint -= amount; return true; }
+                if (soulPoint >= amount) { soulPoint -= amount; OnCurrencyChanged?.Invoke(CurrencyType.SoulPoint, soulPoint); return true; }
                 break;
             case CurrencyType.UndoPoint:
-                if (undoPoint >= amount) { undoPoint -= amount; return true; }
+                if (undoPoint >= amount) { undoPoint -= amount; OnCurrencyChanged?.Invoke(CurrencyType.UndoPoint, undoPoint); return true; }
                 break;
         }
         Debug.Log($"Failed to spend {amount} of {type}. Not enough currency.");

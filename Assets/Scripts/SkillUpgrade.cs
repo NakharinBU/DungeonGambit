@@ -67,7 +67,10 @@ public class SkillUpgrade : MonoBehaviour
     {
         if (currentPlayer == null) return;
 
+        Debug.Log($"SkillUpgrade received Card: {card.cardName}, Skill Asset: {card.skillAsset?.skillName}");
+
         bool spendSuccess = currentPlayer.currencies.Spend(CurrencyType.SoulPoint, card.soulCost);
+        Debug.Log($"Soul Spent successfully! Remaining Soul: {currentPlayer.currencies.Get(CurrencyType.SoulPoint)}");
 
         if (!spendSuccess)
         {
@@ -101,6 +104,8 @@ public class SkillUpgrade : MonoBehaviour
         if (skillToInstall == null || currentPlayer == null) return;
 
         currentPlayer.ReplaceActiveSkill(slotIndex, skillToInstall);
+
+        Debug.Log($"Installing skill to Slot Index: {slotIndex}");
 
         SkillUIManager.Instance.SetupUI(currentPlayer); 
 

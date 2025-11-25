@@ -97,14 +97,13 @@ public class DungeonManager : MonoBehaviour
         SkillUIManager skillUI = FindFirstObjectByType<SkillUIManager>();
         if (skillUI != null)
         {
-            skillUI.SetupUI(player); // ส่ง Player Instance ที่พร้อมแล้วไปให้
+            skillUI.SetupUI(player);
             Debug.Log("[DM] SkillUIManager Setup completed.");
         }
 
-
         SpawnPlayer();
 
-        SetupUI();
+        InvokeSetupCurrencyUI();
 
         SpawnEnemies(level * 2);
     }
@@ -423,26 +422,6 @@ public class DungeonManager : MonoBehaviour
         return Vector2Int.zero;
     }
 
-    private void SetupUI()
-    {
-        // 1. หา CurrencyUI ใน Scene
-        CurrencyUI[] allCurrencyUIs = FindObjectsOfType<CurrencyUI>();
-        Player player = GetPlayer(); // ดึง Player ที่เพิ่งสร้างมา
-
-        if (player != null)
-        {
-            foreach (var currencyUI in allCurrencyUIs)
-            {
-                // 2. สั่ง Setup โดยตรง
-                currencyUI.Setup(player);
-            }
-        }
-        else
-        {
-            Debug.LogError("Player not found when trying to setup Currency UI!");
-        }
-    }
-
     public void SpawnExit()
     {
         if (exitPrefab == null)
@@ -483,6 +462,26 @@ public class DungeonManager : MonoBehaviour
         {
             Debug.LogError("FATAL ERROR: SkillUpgrade Manager Instance is NULL after waiting.");
             // จัดการ Flow เกมต่อไป (ถ้าจำเป็น)
+        }
+    }
+
+    private void InvokeSetupCurrencyUI()
+    {
+        Player player = GetPlayer(); // หรือ Player.Instance;
+
+        if (player != null)
+        {
+            // ใช้วิธีหาแบบเร็วที่สุดเพื่อสั่งให้ CurrencyUI ทำงาน
+            CurrencyUI[] allCurrencyUIs = FindObjectsOfType<CurrencyUI>();
+
+            foreach (var ui in allCurrencyUIs)
+            {
+                if (ui != null)
+                {
+                    // เรียกเมธอดที่เราสร้างขึ้น
+                    ui.SetupSelf();
+                }
+            }
         }
     }
 }

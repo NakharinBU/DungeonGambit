@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : Character
 {
@@ -49,8 +50,8 @@ public class Player : Character
             return;
         }
 
-        Instance = this;
-
+        Player.Instance = this;
+        
         DontDestroyOnLoad(gameObject);
 
     }

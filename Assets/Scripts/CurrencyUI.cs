@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using static EnumData;
+using System.Collections.Generic;
 
 public class CurrencyUI : MonoBehaviour
 {
@@ -8,21 +9,31 @@ public class CurrencyUI : MonoBehaviour
     private TextMeshProUGUI textComponent;
     private Player player;
 
+    private void Start()
+    {
+        SetupSelf();
+    }
+
     private void Awake()
     {
         textComponent = GetComponent<TextMeshProUGUI>();
     }
 
-    public void Setup(Player targetPlayer)
+    public void SetupSelf()
     {
+        Player targetPlayer = Player.Instance;
+
         if (targetPlayer != null && targetPlayer.currencies != null)
         {
+            if (player != null && player.currencies != targetPlayer.currencies)
+            {
+                player.currencies.OnCurrencyChanged -= UpdateDisplay;
+            }
+
             player = targetPlayer;
 
-            // 1. µ‘¥µ“¡ Event
             player.currencies.OnCurrencyChanged += UpdateDisplay;
 
-            // 2. Õ—ª‡¥µ§√—Èß·√°
             int initialValue = player.currencies.Get(typeToDisplay);
             UpdateText(typeToDisplay, initialValue);
         }
@@ -40,20 +51,17 @@ public class CurrencyUI : MonoBehaviour
     {
         if (textComponent != null)
         {
-            if (type == CurrencyType.Gold)
+            switch (type)
             {
-                string symbol = (type == CurrencyType.Gold) ? "G" : "N";
-                textComponent.text = $"Gold: {value} {symbol}";
-            }
-            if (type == CurrencyType.SoulPoint)
-            {
-                string symbol = (type == CurrencyType.SoulPoint) ? "S" : "N";
-                textComponent.text = $"Soul: {value} {symbol}";
-            }
-            if (type == CurrencyType.UndoPoint)
-            {
-                string symbol = (type == CurrencyType.UndoPoint) ? "U" : "N";
-                textComponent.text = $"Undo: 3 {symbol}";
+                case CurrencyType.Gold:
+                    textComponent.text = $"Gold: {value} G";
+                    break;
+                case CurrencyType.SoulPoint:
+                    textComponent.text = $"Soul: {value} S";
+                    break;
+                case CurrencyType.UndoPoint:
+                    textComponent.text = $"Undo: {value} U";
+                    break;
             }
         }
     }
