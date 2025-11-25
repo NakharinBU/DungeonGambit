@@ -1,12 +1,16 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static EnumData;
 
 public class Inventory : MonoBehaviour
 {
-
+    private GameObject currentInventoryUI;
+    private bool isOpen = false;
     private List<ItemData> items = new List<ItemData>();
-    [SerializeField] private int capacity = 20;
+    private void OnEnable() => UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisable() => UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+    [SerializeField] private int capacity = 12;
 
     private void Awake()
     {
@@ -17,7 +21,7 @@ public class Inventory : MonoBehaviour
     {
         if (items.Count >= capacity)
         {
-            Debug.Log("°√–‡ªÎ“‡µÁ¡!");
+            Debug.Log("¬°√É√ê√†¬ª√´√í√†¬µ√ß√Å!");
             return false;
         }
         items.Add(item);
@@ -41,5 +45,42 @@ public class Inventory : MonoBehaviour
     public List<ItemData> GetAllItems()
     {
         return new List<ItemData>(items);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ToggleInventory();
+        }
+    }
+    void ToggleInventory()
+    {
+        isOpen = !isOpen;
+
+        if (InventoryUIManager.Instance != null)
+        {
+            InventoryUIManager.Instance.SetPanelActive(isOpen);
+        }
+        else
+        {
+            Debug.LogError("InventoryUIManager Instance is NULL. Did you forget to place it in the Scene?");
+        }
+
+        if (isOpen)
+            Time.timeScale = 0f;
+        else
+            Time.timeScale = 1f;
+    }
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        currentInventoryUI = GameObject.Find("InventoryPanelRoot");
+
+        if (currentInventoryUI != null)
+        {
+            currentInventoryUI.SetActive(false);
+            Debug.Log("Inventory UI successfully rebound in new scene.");
+        }
     }
 }

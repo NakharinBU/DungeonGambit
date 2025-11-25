@@ -57,6 +57,8 @@ public class DungeonManager : MonoBehaviour
 
     public void GenerateFloor(int level)
     {
+        Inventory InventoryUI = FindFirstObjectByType<Inventory>();
+
         ClearFloor();
 
         map = new Tile[MapWidth, MapHeight];
