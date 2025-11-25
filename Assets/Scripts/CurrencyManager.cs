@@ -10,7 +10,6 @@ public class CurrencyManager
     private int soulPoint = 0;
     private int undoPoint = 0;
 
-    // สมมติว่า SoulUpgrade สร้างทีหลัง
     public List<string> availableUpgrades = new List<string>();
 
 
@@ -72,5 +71,5 @@ public class CurrencyManager
         };
     }
 
-    // **NOTE:** เมธอด ApplyUpgrade และ GetAvailableUpgrades (ต้องใช้ SoulUpgrade Class)
+    // **NOTE:** เมธอด ApplyUpgrade และ GetAvailableUpgrades (ต้องใช้ SkillUpgrade Class)
 }

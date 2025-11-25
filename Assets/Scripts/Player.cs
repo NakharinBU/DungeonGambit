@@ -67,13 +67,12 @@ public class Player : Character
         {
             if (highlighter != null && DungeonManagerRef != null)
             {
-                highlighter.ShowHighlights(this); // Tile Highlight
+                highlighter.ShowHighlights(this);
             }
 
-            // **FIX 4: สั่งแสดง Enemy Intent**
             if (DungeonManagerRef != null)
             {
-                DungeonManagerRef.ShowAllEnemyIntent(this); // Enemy Intent (ทำให้ Enemy "แสดง" การเดิน)
+                DungeonManagerRef.ShowAllEnemyIntent(this);
             }
 
 
@@ -249,4 +248,30 @@ public class Player : Character
 
         Debug.Log("Exiting Skill Targeting Mode.");
     }
+
+    public void AddPassiveSkill(PassiveSkill skill)
+    {
+        if (skill != null && !passiveSkills.Contains(skill))
+        {
+            passiveSkills.Add(skill);
+            Debug.Log($"Passive Skill '{skill.skillName}' added.");
+        }
+    }
+
+    public void ReplaceActiveSkill(int slotIndex, ActiveSkill newSkill)
+    {
+        if (slotIndex < 0) return;
+
+        while (activeSkills.Count <= slotIndex)
+        {
+            activeSkills.Add(null);
+        }
+
+        activeSkills[slotIndex] = newSkill;
+        Debug.Log($"Active Skill '{newSkill.skillName}' installed at Slot {slotIndex}.");
+
+        // **FIXME:** เรียก SkillUIManager.Instance.SetupUI(this); เพื่ออัพเดท UI (ถ้ามี)
+    }
+
+
 }

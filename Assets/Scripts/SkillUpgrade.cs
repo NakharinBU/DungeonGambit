@@ -1,41 +1,121 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+using static EnumData;
 
-[CreateAssetMenu(fileName = "SkillUpgrade", menuName = "Skills/Upgrade Option")]
-public class SkillUpgrade : ScriptableObject
+public class SkillUpgrade : MonoBehaviour
 {
-    public SkillBase skill; // Skill ที่จะถูกอัพเกรด/เพิ่ม
-    public int cost = 5; // FIX: ราคาอัพเกรดด้วย Soul Point
-    public EnumData.UpgradeType upgradeType; // ADD, UPGRADE, REPLACE
+    public static SkillUpgrade Instance { get; private set; }
 
-    public bool ApplyUpgrade(Player player)
+    [Header("UI References")]
+    public GameObject cardSelectionPanel;
+    public List<SkillCardUI> cardSlots;
+    public GameObject slotSelectionOverlay;
+
+    [Header("Data References")]
+    public List<SkillCardData> availableCards;
+    public int cardsToShow = 3;
+
+    private ActiveSkill skillToInstall;
+    private Player currentPlayer;
+
+    private void Awake()
     {
-        // 1. ตรวจสอบ Soul Point
-        int currentSoul = player.currencies.Get(EnumData.CurrencyType.SoulPoint);
-        if (currentSoul < cost)
+        if (Instance != null && Instance != this)
         {
-            Debug.Log("Not enough Soul Points to purchase this upgrade!");
-            return false;
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
+    public void ShowUpgradeSelection()
+    {
+        currentPlayer = Player.Instance;
+        if (currentPlayer == null) return;
+
+        int playerSouls = currentPlayer.currencies.Get(CurrencyType.SoulPoint);
+
+        List<SkillCardData> currentPool = GetRandomCards(availableCards, cardsToShow);
+
+        for (int i = 0; i < cardsToShow; i++)
+        {
+            if (i < currentPool.Count)
+            {
+                cardSlots[i].gameObject.SetActive(true);
+                cardSlots[i].SetupCard(currentPool[i], playerSouls);
+            }
+            else
+            {
+                cardSlots[i].gameObject.SetActive(false);
+            }
         }
 
-        // 2. จ่าย Soul Point
-        player.currencies.Add(EnumData.CurrencyType.SoulPoint, -cost); // ลบ Soul Point
+        cardSelectionPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
 
-        // 3. ใช้ Logic อัพเกรด/เพิ่ม
-        switch (upgradeType)
+    private List<SkillCardData> GetRandomCards(List<SkillCardData> pool, int count)
+    {
+        return pool.OrderBy(x => Random.value).Take(count).ToList();
+    }
+
+    public void SelectCard(SkillCardData card)
+    {
+        if (currentPlayer == null) return;
+
+        bool spendSuccess = currentPlayer.currencies.Spend(CurrencyType.SoulPoint, card.soulCost);
+
+        if (!spendSuccess)
         {
-            case EnumData.UpgradeType.Skill:
-                // ต้องมี List<SkillBase> ใน Player
-                // player.skills.Add(Instantiate(skill));
-                if (skill is PassiveSkill passive)
-                {
-                    passive.ApplyOnAcquire(player); // สำหรับ Passive Skill
-                }
-                break;
-                // case EnumData.UpgradeType.UPGRADE:
-                //    // Logic การเพิ่ม Level ให้ Skill ที่มีอยู่
-                //    break;
+            Debug.Log("Not enough Soul Points!");
+            return;
         }
 
-        return true;
+        if (card.skillType == SkillCardData.SkillType.Passive)
+        {
+            currentPlayer.AddPassiveSkill((PassiveSkill)card.skillAsset);
+            FinishSelection();
+        }
+        else
+        {
+            EnterSlotSelectionMode((ActiveSkill)card.skillAsset);
+        }
+    }
+
+    private void EnterSlotSelectionMode(ActiveSkill skill)
+    {
+        skillToInstall = skill;
+
+        cardSelectionPanel.SetActive(false);
+
+        slotSelectionOverlay.SetActive(true);
+        Debug.Log($"Selected Active Skill: {skill.skillName}. Please choose a slot (Q, W, E).");
+    }
+
+    public void InstallSkillToSlot(int slotIndex)
+    {
+        if (skillToInstall == null || currentPlayer == null) return;
+
+        currentPlayer.ReplaceActiveSkill(slotIndex, skillToInstall);
+
+        SkillUIManager.Instance.SetupUI(currentPlayer); 
+
+        slotSelectionOverlay.SetActive(false);
+        skillToInstall = null;
+        FinishSelection();
+    }
+
+    public void FinishSelection()
+    {
+        cardSelectionPanel.SetActive(false);
+        slotSelectionOverlay.SetActive(false);
+
+        Time.timeScale = 1f;
+
+        Debug.Log("Upgrade selection finished. Game Resumed.");
     }
 }

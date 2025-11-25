@@ -20,20 +20,16 @@ public class SkillEffect : MonoBehaviour
         switch (effect)
         {
             case EnumData.SkillEffectType.Damage:
-                // เรียก CombatSystem.Instance.ProcessDamage(...)
-                // (ต้องปรับ CombatSystem ให้รับ Character 2 ตัว หรือจัดการ damage เอง)
                 Debug.Log($"{target.characterName} took {value} Damage.");
                 target.TakeDamage((int)value);
                 break;
             case EnumData.SkillEffectType.Regen:
                 if (target is Player player)
                 {
-                    // ต้องมีเมธอด AddMana ใน Status หรือ Player
-                    // player.stats.AddMana((int)value); 
+
                     Debug.Log($"Restored {value} Mana.");
                 }
                 break;
-                // ... เพิ่ม Effect อื่นๆ ...
         }
     }
 }

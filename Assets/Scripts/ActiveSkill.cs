@@ -8,7 +8,6 @@ public abstract class ActiveSkill : SkillBase
 
     public abstract List<Vector2Int> GetTargetHighlights(Vector2Int targetPos);
 
-    // เมธอดหลักที่ Player จะเรียกใช้
     public abstract bool Activate(Player user, Vector2Int target);
 
     protected bool CanActivate(Player user)

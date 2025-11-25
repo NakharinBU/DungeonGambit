@@ -3,15 +3,26 @@ using UnityEngine;
 
 public class SkillUIManager : MonoBehaviour
 {
+    public static SkillUIManager Instance { get; private set; }
+
     public SkillSlotUI slotQ;
     public SkillSlotUI slotW;
     public SkillSlotUI slotE;
 
     private List<SkillSlotUI> allSlots = new List<SkillSlotUI>();
     private Player currentPlayer;
-
-    // สถานะปัจจุบัน: เลือก Skill หรือรอ Input เดินปกติ
-    private ActiveSkill currentTargetingSkill = null;
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -19,7 +30,6 @@ public class SkillUIManager : MonoBehaviour
         allSlots.Add(slotW);
         allSlots.Add(slotE);
 
-        // กำหนด Hotkey ให้แต่ละ Slot (ถ้ายังไม่ได้กำหนดใน Inspector)
         slotQ.hotkey = KeyCode.Q;
         slotW.hotkey = KeyCode.W;
         slotE.hotkey = KeyCode.E;
@@ -32,7 +42,6 @@ public class SkillUIManager : MonoBehaviour
         }
     }
 
-    // เมธอดนี้ถูกเรียกใช้เมื่อ Player เปลี่ยน Floor หรือเริ่มเกม
     public void SetupUI(Player player)
     {
         if (player == null) return;
@@ -69,47 +78,5 @@ public class SkillUIManager : MonoBehaviour
             slot.HandleInput(currentPlayer);
             slot.UpdateState(currentPlayer);
         }
-    }
-
-    // NEW: Logic สำหรับจัดการ Input ขณะที่กำลังเลือกเป้าหมาย
-    public void EnterTargetingMode(ActiveSkill skill)
-    {
-        currentTargetingSkill = skill;
-        // 1. **Hide** Highlights ปกติ (Move/Attack)
-        // 2. **Show** Highlight ระยะร่าย (Range)
-        // 3. **Show** Highlight AOE (ตามเมาส์)
-    }
-
-    private void HandleTargetingInput()
-    {
-        // 1. ตรวจสอบตำแหน่งเมาส์บน Grid
-        // Vector2Int mouseGridPos = GetMousePositionOnGrid(); 
-
-        // 2. แสดง Highlight AOE ของ Skill
-        // currentPlayer.highlighter.ShowSkillHighlights(currentTargetingSkill, mouseGridPos);
-
-        // 3. ร่าย Skill เมื่อคลิกซ้าย
-        if (Input.GetMouseButtonDown(0))
-        {
-            // bool success = currentTargetingSkill.Activate(currentPlayer, mouseGridPos);
-            // if (success)
-            // {
-            ExitTargetingMode();
-            // }
-        }
-
-        // 4. ยกเลิกเมื่อคลิกขวาหรือกด Esc
-        if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
-        {
-            ExitTargetingMode();
-        }
-    }
-
-    private void ExitTargetingMode()
-    {
-        currentTargetingSkill = null;
-        // 1. **Clear** Highlight Skill ทั้งหมด
-        // 2. **Show** Highlights ปกติ (Move/Attack) อีกครั้ง
-        Debug.Log("Exiting Skill Targeting Mode.");
     }
 }

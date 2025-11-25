@@ -2,6 +2,7 @@ using static EnumData;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Collections;
 
 public class DungeonManager : MonoBehaviour
 {
@@ -320,6 +321,14 @@ public class DungeonManager : MonoBehaviour
                 Debug.Log($"Floor Clear! Player rewarded with {soulRewardAmount} Soul Points.");
             }
 
+            if (SkillUpgrade.Instance != null)
+            {
+                StartCoroutine(WaitForUpgradeManagerAndShowSelection());
+            }
+            else
+            {
+                Debug.LogError("SkillUpgrade Manager Instance is NULL. Did you forget to place it in the scene?");
+            }
             SpawnChest();
             SpawnExit();
         }
@@ -455,6 +464,23 @@ public class DungeonManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Could not find an empty tile to spawn the chest.");
+        }
+    }
+
+    private IEnumerator WaitForUpgradeManagerAndShowSelection()
+    {
+        yield return null;
+
+
+        if (SkillUpgrade.Instance != null)
+        {
+            Debug.Log("Level Cleared! Initiating Skill Upgrade Selection.");
+            SkillUpgrade.Instance.ShowUpgradeSelection();
+        }
+        else
+        {
+            Debug.LogError("FATAL ERROR: SkillUpgrade Manager Instance is NULL after waiting.");
+            // จัดการ Flow เกมต่อไป (ถ้าจำเป็น)
         }
     }
 }

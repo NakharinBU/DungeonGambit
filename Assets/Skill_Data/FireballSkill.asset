@@ -18,7 +18,7 @@ MonoBehaviour:
   power: 2
   type: 0
   effectType: 0
-  icon: {fileID: 21300000, guid: da7129ed6a246f048a49d8d97de2d2d4, type: 3}
+  icon: {fileID: 21300000, guid: df2b971a1e2144f4982401553d8660c1, type: 3}
   mpCost: 3
   range: 3
   aoeRadius: 1

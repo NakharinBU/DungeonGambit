@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4243470f287fa6d439b63c411ddd73cc, type: 3}
+  m_Name: ThunderBolt_Card
+  m_EditorClassIdentifier: 
+  cardName: ThunderBolt
+  description: "\u0E23\u0E32\u0E22\u0E25\u0E30\u0E40\u0E2D\u0E35\u0E22\u0E14\u0E02\u0E2D\u0E07\u0E2A\u0E01\u0E34\u0E25\u0E19\u0E35\u0E49"
+  artwork: {fileID: 21300000, guid: 99628d91ffb9c074db692dcee1db52eb, type: 3}
+  soulCost: 1
+  skillAsset: {fileID: 11400000, guid: 82c783f3fde136a4bb60d8228099f2bb, type: 2}
+  skillType: 0

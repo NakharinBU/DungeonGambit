@@ -7,7 +7,7 @@ public abstract class PassiveSkill : SkillBase
     // เมธอดสำหรับเรียกใช้ทันทีที่ Skill ถูกติดตั้ง (เช่น เพิ่ม Max HP)
     public virtual void ApplyOnAcquire(Player player) { }
 
-    // เมธอดที่ถูกเรียกเมื่อสิ้นสุดตา (ถ้าจำเป็น)
+    // เมธอดที่ถูกเรียกเมื่อสิ้นสุดตา
     public virtual void OnTurnEnd(Player player) { }
 
     // เมธอดที่ถูกเรียกเมื่อเกิด Trigger (เช่น การฆ่ามอนสเตอร์)

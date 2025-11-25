@@ -16,7 +16,6 @@ public class SkillSlotUI : MonoBehaviour
 
     private readonly Color insufficientManaColor = Color.gray;
 
-    // เมธอดสำหรับติดตั้ง Active Skill เข้าไปในช่อง
     public void Setup(ActiveSkill skill)
     {
         assignedSkill = skill;
@@ -49,9 +48,6 @@ public class SkillSlotUI : MonoBehaviour
             { 
                 Debug.Log("Insufficient Mana!"); 
             }
-
-            // **ชั่วคราว:** ถ้า Skill ไม่ต้องเลือกเป้าหมาย ให้เรียก Activate ทันที (ไม่แนะนำสำหรับ Fireball)
-            // assignedSkill.Activate(player, player.position);
         }
     }
 

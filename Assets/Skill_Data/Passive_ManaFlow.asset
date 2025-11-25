@@ -12,13 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d250b51ea2206b14e86db90e951db79d, type: 3}
   m_Name: Passive_ManaFlow
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: ManaFlow
   description: 
   level: 1
-  power: 0
+  power: 5
   type: 0
-  effectType: 0
-  icon: {fileID: 0}
-  trigger: 0
-  magnitude: 0
-  manaGainedOnKill: 5
+  effectType: 1
+  icon: {fileID: 21300000, guid: 67910f8007940d74cb529e98aab39269, type: 3}
+  trigger: 2
