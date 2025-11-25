@@ -5,8 +5,11 @@ using static EnumData;
 
 public class Inventory : MonoBehaviour
 {
-
+    private GameObject currentInventoryUI;
+    private bool isOpen = false;
     private List<ItemData> items = new List<ItemData>();
+    private void OnEnable() => UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisable() => UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
     [SerializeField] private int capacity = 12;
 
     private void Awake()
@@ -44,10 +47,6 @@ public class Inventory : MonoBehaviour
         return new List<ItemData>(items);
     }
 
-    public GameObject inventoryUI;
-
-    private bool isOpen = false;
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -58,16 +57,30 @@ public class Inventory : MonoBehaviour
     void ToggleInventory()
     {
         isOpen = !isOpen;
-        inventoryUI.SetActive(isOpen);
 
-        // หยุด/ปล่อยการควบคุม Player เมื่อเปิดเมนู
+        if (InventoryUIManager.Instance != null)
+        {
+            InventoryUIManager.Instance.SetPanelActive(isOpen);
+        }
+        else
+        {
+            Debug.LogError("InventoryUIManager Instance is NULL. Did you forget to place it in the Scene?");
+        }
+
         if (isOpen)
-            Time.timeScale = 0f; // หยุดเกมถ้าต้องการ
+            Time.timeScale = 0f;
         else
             Time.timeScale = 1f;
+    }
 
-        // ปิดเมาส์ล็อค ถ้ามีระบบ FPS
-        //Cursor.visible = isOpen;
-        //Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        currentInventoryUI = GameObject.Find("InventoryPanelRoot");
+
+        if (currentInventoryUI != null)
+        {
+            currentInventoryUI.SetActive(false);
+            Debug.Log("Inventory UI successfully rebound in new scene.");
+        }
     }
 }
