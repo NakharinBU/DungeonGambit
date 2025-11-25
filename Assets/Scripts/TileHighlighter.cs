@@ -29,6 +29,10 @@ public class TileHighlighter : MonoBehaviour
 
     public Color enemyPathColor = new Color(1f, 0.5f, 0f, 0.4f); // ส้ม (เส้นทางเดิน)
 
+    [Header("Skill Highlight Colors")]
+    public Color skillAOEColor = new Color(1f, 0.8f, 0f, 0.6f);
+    public Color outOfRangeColor = new Color(0.2f, 0.2f, 0.2f, 0.4f);
+
     public void ClearHighlights()
     {
         foreach (GameObject obj in highlights)
@@ -163,5 +167,65 @@ public class TileHighlighter : MonoBehaviour
         Character charAtTarget = dungeonManager.GetCharacterAtPosition(pos);
 
         return targetTile != null && targetTile.IsWalkable() && charAtTarget == null;
+    }
+
+    public void ShowSkillHighlights(ActiveSkill skill, Vector2Int targetCenter, Vector2Int playerPos)
+    {
+        if (DungeonManagerRef == null) return;
+
+        ClearHighlights();
+
+        float distanceToCenter = Vector2Int.Distance(playerPos, targetCenter);
+
+        if (distanceToCenter > skill.range + 0.5f)
+        {
+            ShowSingleHighlight(targetCenter, outOfRangeColor);
+            return;
+        }
+
+        List<Vector2Int> aoePositions = skill.GetTargetHighlights(targetCenter);
+
+        foreach (Vector2Int checkPos in aoePositions)
+        {
+            Tile tileData = DungeonManagerRef.GetTile(checkPos.x, checkPos.y);
+
+            if (tileData == null) continue;
+
+            GameObject highlight = Instantiate(highlightPrefab,
+                                               new Vector3(checkPos.x, checkPos.y, 0f),
+                                               Quaternion.identity);
+
+            var sr = highlight.GetComponent<SpriteRenderer>();
+
+            sr.color = skillAOEColor;
+
+            Color c = sr.color;
+            c.a = 0.6f;
+            sr.color = c;
+
+            highlights.Add(highlight);
+            ShowSingleHighlight(checkPos, skillAOEColor);
+        }
+
+
+    }
+
+    private void ShowSingleHighlight(Vector2Int pos, Color color)
+    {
+        Tile tileData = DungeonManagerRef.GetTile(pos.x, pos.y);
+        if (tileData == null) return;
+
+        GameObject highlight = Instantiate(highlightPrefab,
+                                           new Vector3(pos.x, pos.y, 0f),
+                                           Quaternion.identity);
+
+        var sr = highlight.GetComponent<SpriteRenderer>();
+        sr.color = color;
+
+        Color c = sr.color;
+        c.a = color.a;
+        sr.color = c;
+
+        highlights.Add(highlight);
     }
 }

@@ -89,6 +89,16 @@ public class DungeonManager : MonoBehaviour
             }
         }
 
+        Player player = Player.Instance;
+
+        SkillUIManager skillUI = FindFirstObjectByType<SkillUIManager>();
+        if (skillUI != null)
+        {
+            skillUI.SetupUI(player); // ส่ง Player Instance ที่พร้อมแล้วไปให้
+            Debug.Log("[DM] SkillUIManager Setup completed.");
+        }
+
+
         SpawnPlayer();
 
         SetupUI();
@@ -299,7 +309,7 @@ public class DungeonManager : MonoBehaviour
         if (enemiesOnFloor.Count == 0)
         {
             Debug.Log("All enemies defeated! Spawning exit/reward chest.");
-            int soulRewardAmount = currentFloor;
+            int soulRewardAmount = currentFloor * 2;
 
             Player player = Player.Instance;
 

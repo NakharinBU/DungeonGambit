@@ -72,8 +72,7 @@ public class Character : MonoBehaviour
 
     public virtual void Die()
     {
-        Player player = FindFirstObjectByType<Player>();
-        player?.GetComponent<TileHighlighter>()?.ClearHighlights();
+        
         Debug.Log($"{characterName} ถูกกำจัดแล้ว!");
 
         Destroy(gameObject);

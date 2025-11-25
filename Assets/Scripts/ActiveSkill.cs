@@ -1,16 +1,28 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveSkill : MonoBehaviour
+public abstract class ActiveSkill : SkillBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public int mpCost;
+    public int range;
+
+    public abstract List<Vector2Int> GetTargetHighlights(Vector2Int targetPos);
+
+    // เมธอดหลักที่ Player จะเรียกใช้
+    public abstract bool Activate(Player user, Vector2Int target);
+
+    protected bool CanActivate(Player user)
     {
-        
+
+        if (user.stats.mp < mpCost) 
+        {
+            return false;
+        }
+        return true;
     }
 
-    // Update is called once per frame
-    void Update()
+    protected void PayCost(Player user)
     {
-        
+        user.UseMana(mpCost);
     }
 }

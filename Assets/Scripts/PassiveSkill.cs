@@ -1,16 +1,15 @@
 using UnityEngine;
 
-public class PassiveSkill : MonoBehaviour
+public abstract class PassiveSkill : SkillBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public EnumData.PassiveTrigger trigger;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // เมธอดสำหรับเรียกใช้ทันทีที่ Skill ถูกติดตั้ง (เช่น เพิ่ม Max HP)
+    public virtual void ApplyOnAcquire(Player player) { }
+
+    // เมธอดที่ถูกเรียกเมื่อสิ้นสุดตา (ถ้าจำเป็น)
+    public virtual void OnTurnEnd(Player player) { }
+
+    // เมธอดที่ถูกเรียกเมื่อเกิด Trigger (เช่น การฆ่ามอนสเตอร์)
+    public virtual void OnTrigger(Player player, object context = null) { }
 }

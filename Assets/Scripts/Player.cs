@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : Character
@@ -8,6 +9,11 @@ public class Player : Character
     public CurrencyManager currencies;
     public bool isAutoMoving = false;
     public TileHighlighter highlighter;
+    public List<PassiveSkill> passiveSkills = new List<PassiveSkill>();
+    public List<ActiveSkill> activeSkills = new List<ActiveSkill>();
+    
+    public bool isTargeting = false;
+    public ActiveSkill currentTargetingSkill { get; private set; } = null; // Skill ที่กำลังถูกเลือกใช้
 
     public DungeonManager DungeonManagerRef
     {
@@ -51,6 +57,12 @@ public class Player : Character
 
     private void Update()
     {
+        if (isTargeting)
+        {
+            HandleSkillTargeting();
+            return;
+        }
+
         if (!isAutoMoving)
         {
             if (highlighter != null && DungeonManagerRef != null)
@@ -107,6 +119,11 @@ public class Player : Character
         if (targetChar != null && targetChar is Enemy enemy)
         {
             Attack(enemy);
+            
+            if (stats != null)
+            {
+                RestoreMana(1);
+            }
 
             DungeonManagerRef.ResolveEnemyTurn();
 
@@ -119,6 +136,13 @@ public class Player : Character
 
         if (moveSuccess)
         {
+            if (stats != null)
+            {
+                RestoreMana(1);
+            }
+
+            CheckPassiveTrigger(EnumData.PassiveTrigger.OnTurnEnd, this);
+
             InteractableObject interactableObject = dm.GetInteractableAtPosition(targetPos) as InteractableObject;
 
             if (interactableObject != null)
@@ -151,5 +175,78 @@ public class Player : Character
             yield return null;
         }
         transform.position = target;
+    }
+    public void CheckPassiveTrigger(EnumData.PassiveTrigger triggerType, Character target, object context = null)
+    {
+        foreach (PassiveSkill skill in passiveSkills)
+        {
+            if (skill.trigger == triggerType)
+            {
+                skill.OnTrigger(this, context);
+            }
+        }
+    }
+
+    private void HandleSkillTargeting()
+    {
+        if (currentTargetingSkill == null)
+        {
+            ExitTargetingMode();
+            return;
+        }
+
+        Vector2Int mouseGridPos = GetGridPositionFromMouse();
+
+        highlighter?.ShowSkillHighlights(currentTargetingSkill, mouseGridPos, position);
+
+        float distance = Vector2Int.Distance(position, mouseGridPos);
+        bool inRange = distance <= currentTargetingSkill.range + 0.5f;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (inRange)
+            {
+
+                if (stats.mp >= currentTargetingSkill.mpCost)
+                {
+                    bool success = currentTargetingSkill.Activate(this, mouseGridPos);
+                    if (success)
+                    {
+                        ExitTargetingMode();
+                        DungeonManagerRef?.ResolveEnemyTurn();
+                    }
+                }
+            }
+        }
+
+        if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("[CANCEL] Skill Targeting Canceled by Input.");
+
+            ExitTargetingMode();
+        }
+    }
+
+    public void EnterTargetingMode(ActiveSkill skill)
+    {
+        if (skill == null) return;
+
+        isTargeting = true;
+        currentTargetingSkill = skill;
+
+        highlighter?.ClearHighlights();
+
+        Debug.Log($"Entering Skill Targeting Mode for: {skill.skillName}");
+    }
+
+    public void ExitTargetingMode()
+    {
+        isTargeting = false;
+        currentTargetingSkill = null;
+        highlighter?.ClearHighlights();
+
+        highlighter?.ShowHighlights(this);
+
+        Debug.Log("Exiting Skill Targeting Mode.");
     }
 }
