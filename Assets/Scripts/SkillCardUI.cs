@@ -32,7 +32,7 @@ public class SkillCardUI : MonoBehaviour
         }
 
         nameText.text = card.skillAsset.skillName;
-        costText.text = card.soulCost.ToString();
+        costText.text = "Soul Cost: " + card.soulCost.ToString();
         iconImage.sprite = card.skillAsset.icon;
 
         bool canAfford = playerSouls >= card.soulCost;

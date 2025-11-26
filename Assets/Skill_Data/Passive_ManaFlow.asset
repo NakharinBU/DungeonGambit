@@ -18,5 +18,5 @@ MonoBehaviour:
   power: 5
   type: 0
   effectType: 1
-  icon: {fileID: 21300000, guid: 67910f8007940d74cb529e98aab39269, type: 3}
+  icon: {fileID: 21300000, guid: cd25b22a0d32148438264720cd5a19d7, type: 3}
   trigger: 2
