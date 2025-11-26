@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StatusBarUI : MonoBehaviour
 {
-    public enum StatType { HP, MP }
+    public enum StatType { HP, MP, ATK }
     public StatType typeToDisplay = StatType.HP;
 
     [Header("UI Elements")]
@@ -36,6 +36,10 @@ public class StatusBarUI : MonoBehaviour
             {
                 UpdateMana(player.stats.mp, player.stats.maxMp);
             }
+            else if (typeToDisplay == StatType.ATK)
+            {
+                UpdateAttack(player.stats.atk);
+            }
         }
         else
         {
@@ -55,6 +59,11 @@ public class StatusBarUI : MonoBehaviour
         {
             player.OnManaChanged += UpdateMana;
         }
+        else if (typeToDisplay == StatType.ATK)
+        {
+            player.OnAttackChanged += UpdateAttack;
+        }
+
     }
 
     private void UnsubscribeEvents()
@@ -63,6 +72,7 @@ public class StatusBarUI : MonoBehaviour
 
         player.OnHealthChanged -= UpdateHealth;
         player.OnManaChanged -= UpdateMana;
+        player.OnAttackChanged -= UpdateAttack;
     }
 
     private void UpdateHealth(int current, int max)
@@ -78,6 +88,14 @@ public class StatusBarUI : MonoBehaviour
         if (textComponent != null)
         {
             textComponent.text = $"MP: {current} / {max}";
+        }
+    }
+
+    private void UpdateAttack(int current)
+    {
+        if (textComponent != null)
+        {
+            textComponent.text = $"ATK: {current}";
         }
     }
 

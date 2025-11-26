@@ -15,7 +15,9 @@ public class EnumData : MonoBehaviour
     public enum PassiveTrigger { OnTurnStart, OnTurnEnd, OnKill, OnAttack }
 
     public enum UpgradeType { Stat, Skill, Item, Passive }
-    
+
+    public enum StatusUpgradeType { None, MaxHP, MaxMP, Attack }
+
     public enum SoulUpgradeType { Health, Attack, Mana, Special }
 
     public enum TurnState { PlayerTurn, EnemyTurn, Processing }

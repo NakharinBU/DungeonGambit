@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class InventoryUIManager : MonoBehaviour
@@ -30,13 +31,18 @@ public class InventoryUIManager : MonoBehaviour
         Player player = Player.Instance;
         if (player == null || player.inventory == null) return;
 
-        List<ItemData> items = player.inventory.GetAllItems();
+        Dictionary<ItemData, int> itemStacks = player.inventory.GetAllItemStacks();
+
+        List<KeyValuePair<ItemData, int>> stacksList = itemStacks.ToList();
 
         for (int i = 0; i < slotUIs.Count; i++)
         {
-            if (i < items.Count)
+            if (i < stacksList.Count)
             {
-                slotUIs[i].SetupSlot(items[i], 1);
+                ItemData item = stacksList[i].Key;
+                int quantity = stacksList[i].Value;
+
+                slotUIs[i].SetupSlot(item, quantity);
             }
             else
             {

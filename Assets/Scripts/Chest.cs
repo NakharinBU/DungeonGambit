@@ -33,7 +33,7 @@ public class Chest : InteractableObject
             {
                 if (item != null)
                 {
-                    player.inventory.AddItem(item);
+                    player.inventory.AddItem(item, 1);
                     Debug.Log($"- Added item: {item.itemName}");
                 }
             }

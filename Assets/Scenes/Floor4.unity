@@ -954,6 +954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentFloor: 1
+  trappedMerchantPrefab: {fileID: 1279655931627482654, guid: 7d908ba845b1044e6829ed5fb7c4be10, type: 3}
   playerPrefab: {fileID: 2975489352503432100, guid: 4c033ef69eb269849bab9de975c465ed, type: 3}
   enemyPrefabs:
   - {fileID: 1000010755293042, guid: 978fa2fb617654f5eaeff9da6fc7d116, type: 3}

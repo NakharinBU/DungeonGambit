@@ -7,6 +7,7 @@ public class Character : MonoBehaviour
 
     public event Action<int, int> OnHealthChanged;
     public event Action<int, int> OnManaChanged;
+    public event Action<int> OnAttackChanged;
 
     [Header("Character Info")]
     public string characterName = "Base Character";
@@ -115,5 +116,23 @@ public class Character : MonoBehaviour
     {
         stats.hp = Mathf.Min(stats.hp + amount, stats.maxHp);
         OnHealthChanged?.Invoke(stats.hp, stats.maxHp);
+    }
+
+    public void UpgradeMaxHP(int amount)
+    {
+        if (stats != null) stats.maxHp += amount;
+        OnHealthChanged?.Invoke(stats.hp, stats.maxHp);
+    }
+
+    public void UpgradeMaxMP(int amount)
+    {
+        if (stats != null) stats.maxMp += amount;
+        OnManaChanged?.Invoke(stats.mp, stats.maxMp);
+    }
+
+    public void UpgradeBaseAttack(int amount)
+    {
+        if (stats != null) stats.atk += amount;
+        OnAttackChanged.Invoke(stats.atk);
     }
 }

@@ -1,10 +1,9 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-// Ê×º·Í´¨Ò¡ MonoBehaviour áÅÐ IPointerClickHandler
-public class InventorySlotUI : MonoBehaviour, IPointerClickHandler
+public class InventorySlotUI : MonoBehaviour
 {
     public Image itemIcon;
     public TextMeshProUGUI stackText;
@@ -13,6 +12,8 @@ public class InventorySlotUI : MonoBehaviour, IPointerClickHandler
     private ItemData currentItem;
     private Inventory inventoryRef;
 
+    private int currentStackCount = 0;
+    
     private void Start()
     {
         if (useButton != null)
@@ -20,24 +21,38 @@ public class InventorySlotUI : MonoBehaviour, IPointerClickHandler
             useButton.onClick.AddListener(UseItem);
         }
 
-        inventoryRef = Player.Instance?.inventory;
+        if (Player.Instance != null)
+        {
+            inventoryRef = Player.Instance.GetComponent<Inventory>();
+        }
     }
 
     public void SetupSlot(ItemData item, int stackCount = 1)
     {
         currentItem = item;
+        currentStackCount = stackCount;
 
         bool hasItem = item != null;
 
         itemIcon.enabled = hasItem;
+        stackText.enabled = hasItem;
+
         if (hasItem)
         {
             itemIcon.sprite = item.icon;
-            stackText.text = "";
+
+            if (stackCount > 1)
+            {
+                stackText.text = stackCount.ToString();
+            }
+            else
+            {
+                stackText.text = "";
+            }
 
             if (useButton != null)
             {
-                useButton.interactable = item.Type == EnumData.ItemType.Consumable;
+                useButton.interactable = item.Type == EnumData.ItemType.Consumable && inventoryRef != null;
             }
         }
         else
@@ -46,15 +61,19 @@ public class InventorySlotUI : MonoBehaviour, IPointerClickHandler
             stackText.text = "";
             if (useButton != null) useButton.interactable = false;
         }
+
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    /*public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            UseItem();
+            if (currentItem != null && currentItem.Type == EnumData.ItemType.Consumable)
+            {
+                UseItem();
+            }
         }
-    }
+    }*/
 
     private void UseItem()
     {
@@ -64,10 +83,15 @@ public class InventorySlotUI : MonoBehaviour, IPointerClickHandler
 
             if (currentItem.Type == EnumData.ItemType.Consumable)
             {
-                bool removed = inventoryRef.RemoveItem(currentItem);
+                bool removed = inventoryRef.RemoveItem(currentItem, 1);
+
                 if (removed)
                 {
                     InventoryUIManager.Instance?.UpdateInventoryUI();
+                }
+                else
+                {
+                    Debug.LogWarning($"Failed to remove {currentItem.Name} from Inventory after use.");
                 }
             }
         }

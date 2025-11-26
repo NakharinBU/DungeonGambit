@@ -39,7 +39,7 @@ public class CurrencyUI : MonoBehaviour
         }
     }
 
-    private void UpdateDisplay(CurrencyType type, int newValue)
+    public void UpdateDisplay(CurrencyType type, int newValue)
     {
         if (type == typeToDisplay)
         {

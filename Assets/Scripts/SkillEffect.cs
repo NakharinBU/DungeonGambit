@@ -13,14 +13,14 @@ public class SkillEffect : MonoBehaviour
         duration = dur;
     }
 
-    public void Apply(Character target)
+    public void Apply(Character target, int damage)
     {
         if (target == null) return;
 
         switch (effect)
         {
             case EnumData.SkillEffectType.Damage:
-                Debug.Log($"{target.characterName} took {value} Damage.");
+                Debug.Log($"{target.characterName} took {damage} Damage.");
                 target.TakeDamage((int)value);
                 break;
             case EnumData.SkillEffectType.Regen:

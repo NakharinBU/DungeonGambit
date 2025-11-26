@@ -1,4 +1,4 @@
-using static EnumData;
+Ôªøusing static EnumData;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -13,6 +13,8 @@ public class DungeonManager : MonoBehaviour
     private List<Enemy> enemiesOnFloor = new List<Enemy>();
     private Player currentPlayer;
     public int currentFloor = 1;
+
+    public TrappedMerchant trappedMerchantPrefab;
 
     [Header("Prefabs")]
     public GameObject playerPrefab;
@@ -106,6 +108,11 @@ public class DungeonManager : MonoBehaviour
         InvokeSetupCurrencyUI();
 
         SpawnEnemies(level * 2);
+
+        if (level == 4)
+        {
+            SpawnTrappedMerchant();
+        }
     }
 
     private void SpawnPlayer()
@@ -328,6 +335,13 @@ public class DungeonManager : MonoBehaviour
             {
                 Debug.LogError("SkillUpgrade Manager Instance is NULL. Did you forget to place it in the scene?");
             }
+
+            if (currentFloor == 4)
+            {
+                TrappedMerchant merchant = FindFirstObjectByType<TrappedMerchant>();
+                merchant?.FreeMerchant();
+            }
+
             SpawnChest();
             SpawnExit();
         }
@@ -459,27 +473,39 @@ public class DungeonManager : MonoBehaviour
         else
         {
             Debug.LogError("FATAL ERROR: SkillUpgrade Manager Instance is NULL after waiting.");
-            // ®—¥°“√ Flow ‡°¡µËÕ‰ª (∂È“®”‡ªÁπ)
+            // ‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£ Flow ‡πÄ‡∏Å‡∏°‡∏ï‡πà‡∏≠‡πÑ‡∏õ (‡∏ñ‡πâ‡∏≤‡∏à‡∏≥‡πÄ‡∏õ‡πá‡∏ô)
         }
     }
 
     private void InvokeSetupCurrencyUI()
     {
-        Player player = GetPlayer(); // À√◊Õ Player.Instance;
+        Player player = GetPlayer(); // ‡∏´‡∏£‡∏∑‡∏≠ Player.Instance;
 
         if (player != null)
         {
-            // „™È«‘∏’À“·∫∫‡√Á«∑’Ë ÿ¥‡æ◊ËÕ —Ëß„ÀÈ CurrencyUI ∑”ß“π
+            // ‡πÉ‡∏ä‡πâ‡∏ß‡∏¥‡∏ò‡∏µ‡∏´‡∏≤‡πÅ‡∏ö‡∏ö‡πÄ‡∏£‡πá‡∏ß‡∏ó‡∏µ‡πà‡∏™‡∏∏‡∏î‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏™‡∏±‡πà‡∏á‡πÉ‡∏´‡πâ CurrencyUI ‡∏ó‡∏≥‡∏á‡∏≤‡∏ô
             CurrencyUI[] allCurrencyUIs = FindObjectsOfType<CurrencyUI>();
 
             foreach (var ui in allCurrencyUIs)
             {
                 if (ui != null)
                 {
-                    // ‡√’¬°‡¡∏Õ¥∑’Ë‡√“ √È“ß¢÷Èπ
+                    // ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏ò‡∏≠‡∏î‡∏ó‡∏µ‡πà‡πÄ‡∏£‡∏≤‡∏™‡∏£‡πâ‡∏≤‡∏á‡∏Ç‡∏∂‡πâ‡∏ô
                     ui.SetupSelf();
                 }
             }
+        }
+    }
+
+    private void SpawnTrappedMerchant()
+    {
+        Vector2Int spawnPos = GetRandomEmptyWalkablePosition();
+
+        if (spawnPos != Vector2Int.zero && trappedMerchantPrefab != null)
+        {
+            TrappedMerchant merchant = (TrappedMerchant)SpawnInteractable(trappedMerchantPrefab, spawnPos);
+
+            Debug.Log($"Trapped Merchant spawned at {spawnPos}");
         }
     }
 }
