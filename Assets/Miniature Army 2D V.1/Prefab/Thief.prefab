@@ -688,7 +688,7 @@ MonoBehaviour:
   characterName: Base Character
   stats: {fileID: 5785269628151924748}
   position: {x: 0, y: 0}
-  enemyType: 0
+  enemyType: 2
   visionRange: 10
   possibleDrops:
   - itemPrefab: {fileID: 6874260510649107500, guid: 19ba93584772ee44184c932f4ac6ab90, type: 3}
@@ -706,11 +706,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8529cd5a475b10f459fc7547e1f06799, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 5
-  maxHp: 5
+  hp: 10
+  maxHp: 10
   mp: 0
   maxMp: 0
-  atk: 2
+  atk: 5
 --- !u!1 &1000012730742446
 GameObject:
   m_ObjectHideFlags: 0

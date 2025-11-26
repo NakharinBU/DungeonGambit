@@ -21,7 +21,7 @@ public class SkillEffect : MonoBehaviour
         {
             case EnumData.SkillEffectType.Damage:
                 Debug.Log($"{target.characterName} took {damage} Damage.");
-                target.TakeDamage((int)value);
+                target.TakeDamage(damage);
                 break;
             case EnumData.SkillEffectType.Regen:
                 if (target is Player player)
