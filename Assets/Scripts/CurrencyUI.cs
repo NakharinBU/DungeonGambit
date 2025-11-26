@@ -23,13 +23,13 @@ public class CurrencyUI : MonoBehaviour
     {
         Player targetPlayer = Player.Instance;
 
+        if (player != null && player.currencies != null)
+        {
+            player.currencies.OnCurrencyChanged -= UpdateDisplay;
+        }
+
         if (targetPlayer != null && targetPlayer.currencies != null)
         {
-            if (player != null && player.currencies != targetPlayer.currencies)
-            {
-                player.currencies.OnCurrencyChanged -= UpdateDisplay;
-            }
-
             player = targetPlayer;
 
             player.currencies.OnCurrencyChanged += UpdateDisplay;
@@ -63,14 +63,6 @@ public class CurrencyUI : MonoBehaviour
                     textComponent.text = $"Undo: {value} U";
                     break;
             }
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (player != null && player.currencies != null)
-        {
-            player.currencies.OnCurrencyChanged -= UpdateDisplay;
         }
     }
 }

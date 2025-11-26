@@ -479,18 +479,16 @@ public class DungeonManager : MonoBehaviour
 
     private void InvokeSetupCurrencyUI()
     {
-        Player player = GetPlayer(); // หรือ Player.Instance;
+        Player player = GetPlayer();
 
         if (player != null)
         {
-            // ใช้วิธีหาแบบเร็วที่สุดเพื่อสั่งให้ CurrencyUI ทำงาน
-            CurrencyUI[] allCurrencyUIs = FindObjectsOfType<CurrencyUI>();
+            CurrencyUI[] allCurrencyUIs = FindObjectsByType<CurrencyUI>(FindObjectsSortMode.None);
 
             foreach (var ui in allCurrencyUIs)
             {
                 if (ui != null)
                 {
-                    // เรียกเมธอดที่เราสร้างขึ้น
                     ui.SetupSelf();
                 }
             }
