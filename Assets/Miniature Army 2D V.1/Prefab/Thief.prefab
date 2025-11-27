@@ -710,7 +710,7 @@ MonoBehaviour:
   maxHp: 10
   mp: 0
   maxMp: 0
-  atk: 5
+  atk: 2
 --- !u!1 &1000012730742446
 GameObject:
   m_ObjectHideFlags: 0
