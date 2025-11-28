@@ -194,7 +194,7 @@ public class TileHighlighter : MonoBehaviour
             GameObject highlight = Instantiate(highlightPrefab,
                                                new Vector3(checkPos.x, checkPos.y, 0f),
                                                Quaternion.identity);
-
+            
             var sr = highlight.GetComponent<SpriteRenderer>();
 
             sr.color = skillAOEColor;

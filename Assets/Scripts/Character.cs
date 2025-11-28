@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class Character : MonoBehaviour
 {
-
+    
     public event Action<int, int> OnHealthChanged;
     public event Action<int, int> OnManaChanged;
     public event Action<int> OnAttackChanged;
