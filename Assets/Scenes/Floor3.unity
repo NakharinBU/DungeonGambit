@@ -657,8 +657,8 @@ MonoBehaviour:
   - {fileID: 1000010755293042, guid: 978fa2fb617654f5eaeff9da6fc7d116, type: 3}
   - {fileID: 1000010854855540, guid: a3c1faf915dc240bca8ed7566d46910c, type: 3}
   - {fileID: 1000013034572668, guid: 389c7e1a1dabb4e1e917001420b89c9a, type: 3}
-  floorPrefab: {fileID: 106160, guid: 038998774947c4a8fa170d5b4492a7dd, type: 3}
-  wallPrefab: {fileID: 110520, guid: b1361c167057d93419e387f0e521b453, type: 3}
+  floorPrefab: {fileID: 8773457103693646000, guid: e8e7cdbb42630d84ba1a71809322c06c, type: 3}
+  wallPrefab: {fileID: 1298627783349485911, guid: 95b5267026e66a8449a9d268d37807ac, type: 3}
   tileParent: {fileID: 0}
   chestPrefab: {fileID: 9218490108359249709, guid: 56fc2be8d8970c74c84565c59cdc12e7, type: 3}
   exitPrefab: {fileID: 2546711881923725053, guid: 317b12239e5391c4596a368f330b2fb6, type: 3}

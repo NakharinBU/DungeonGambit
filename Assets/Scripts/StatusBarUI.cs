@@ -1,6 +1,7 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StatusBarUI : MonoBehaviour
 {
@@ -8,12 +9,19 @@ public class StatusBarUI : MonoBehaviour
     public StatType typeToDisplay = StatType.HP;
 
     [Header("UI Elements")]
-    public TextMeshProUGUI textComponent; 
+    public TextMeshProUGUI textComponent;
+
+    public Image fillImage;
 
     private Player player;
 
     private void Start()
     {
+        if (typeToDisplay != StatType.ATK && fillImage == null)
+        {
+            Debug.LogError($"Fill Image is missing for {typeToDisplay} UI on {gameObject.name}!");
+        }
+
         StartCoroutine(WaitForPlayerSetup());
     }
 
@@ -81,13 +89,27 @@ public class StatusBarUI : MonoBehaviour
         {
             textComponent.text = $"HP: {current} / {max}";
         }
+
+        // 2. อัพเดทแถบ (Bar)
+        if (fillImage != null && max > 0)
+        {
+            float fillAmount = (float)current / max;
+            fillImage.fillAmount = fillAmount;
+        }
     }
 
     private void UpdateMana(int current, int max)
     {
+        // 1. อัพเดท Text
         if (textComponent != null)
         {
             textComponent.text = $"MP: {current} / {max}";
+        }
+
+        if (fillImage != null && max > 0)
+        {
+            float fillAmount = (float)current / max;
+            fillImage.fillAmount = fillAmount;
         }
     }
 
@@ -95,7 +117,7 @@ public class StatusBarUI : MonoBehaviour
     {
         if (textComponent != null)
         {
-            textComponent.text = $"ATK: {current}";
+            textComponent.text = $"     {current}";
         }
     }
 

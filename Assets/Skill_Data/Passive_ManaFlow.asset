@@ -19,4 +19,8 @@ MonoBehaviour:
   type: 0
   effectType: 1
   icon: {fileID: 21300000, guid: cd25b22a0d32148438264720cd5a19d7, type: 3}
+  vfxPrefab: {fileID: 3280519133390621005, guid: a71be3e7990efb040a07565c43cbb198, type: 3}
+  vfxDuration: 0.5
+  sfxClip: {fileID: 8300000, guid: 8c1d98ec2f15246438b7854f44ca4562, type: 3}
+  sfxVolume: 0.15
   trigger: 2

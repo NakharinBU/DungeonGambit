@@ -1,16 +1,17 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 [CreateAssetMenu(fileName = "AreaDamageSkill", menuName = "Skills/Active/AreaDamageSkill")]
 public class AreaDamageSkill : ActiveSkill
 {
-    public float damageMultiplier = 1f; 
+    public float damageMultiplier = 1f;
 
     [Header("Targeting Parameters")]
-    // √—»¡’¢Õß AOE (Area of Effect)
+    // ‡∏£‡∏±‡∏®‡∏°‡∏µ‡∏Ç‡∏≠‡∏á AOE (Area of Effect)
     // 0 = Single Target (1x1)
-    // 1 = AOE ¢π“¥ 3x3 (Fireball ‡¥‘¡)
-    // 2 = AOE ¢π“¥ 5x5
+    // 1 = AOE ‡∏Ç‡∏ô‡∏≤‡∏î 3x3 (Fireball ‡πÄ‡∏î‡∏¥‡∏°)
+    // 2 = AOE ‡∏Ç‡∏ô‡∏≤‡∏î 5x5
     public int aoeRadius = 1;
 
     public override bool Activate(Player user, Vector2Int target)
@@ -21,13 +22,24 @@ public class AreaDamageSkill : ActiveSkill
 
         float finalDamage = power + (user.stats?.atk * damageMultiplier ?? 0f);
 
-        // 2. À“‡ªÈ“À¡“¬µ“¡√—»¡’ AOE ∑’Ë°”Àπ¥
+        if (vfxPrefab != null)
+        {
+            user.DungeonManagerRef?.PlayVFX(vfxPrefab, target, vfxDuration);
+        }
+
+        if (sfxClip != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(sfxClip, sfxVolume);
+        }
+
+
+        // 2. ‡∏´‡∏≤‡πÄ‡∏õ‡πâ‡∏≤‡∏´‡∏°‡∏≤‡∏¢‡∏ï‡∏≤‡∏°‡∏£‡∏±‡∏®‡∏°‡∏µ AOE ‡∏ó‡∏µ‡πà‡∏Å‡∏≥‡∏´‡∏ô‡∏î
         for (int x = -aoeRadius; x <= aoeRadius; x++)
         {
             for (int y = -aoeRadius; y <= aoeRadius; y++)
             {
                 Vector2Int aoeTarget = target + new Vector2Int(x, y);
-                // 3. À“ Character ∑’Ëµ”·ÀπËßπ—Èπ
+                // 3. ‡∏´‡∏≤ Character ‡∏ó‡∏µ‡πà‡∏ï‡∏≥‡πÅ‡∏´‡∏ô‡πà‡∏á‡∏ô‡∏±‡πâ‡∏ô
                 Character targetChar = user.DungeonManagerRef?.GetCharacterAtPosition(aoeTarget);
 
                 if (targetChar != null && targetChar != user)

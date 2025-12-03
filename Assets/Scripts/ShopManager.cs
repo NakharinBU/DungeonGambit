@@ -17,6 +17,9 @@ public class ShopManager : MonoBehaviour
 
     private HashSet<ShopItemData> purchasedItems = new HashSet<ShopItemData>();
 
+    public AudioClip sfxClip;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
+
     private void Awake()
     {
         if (Instance != null && Instance != this) Destroy(gameObject);
@@ -61,6 +64,12 @@ public class ShopManager : MonoBehaviour
         }
 
         bool success = currentPlayer.currencies.Spend(itemData.currencyType, itemData.price);
+
+        if (sfxClip != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(sfxClip, sfxVolume);
+        }
+
 
         if (success)
         {

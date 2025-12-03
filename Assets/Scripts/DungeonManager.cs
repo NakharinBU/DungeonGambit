@@ -506,4 +506,34 @@ public class DungeonManager : MonoBehaviour
             Debug.Log($"Trapped Merchant spawned at {spawnPos}");
         }
     }
+
+    public void PlayVFX(GameObject vfxPrefab, Vector2Int gridPosition, float duration = 1.0f)
+    {
+        if (vfxPrefab == null) return;
+
+        Vector3 worldPos = new Vector3(gridPosition.x, gridPosition.y, -0.5f);
+
+        GameObject vfxInstance = Instantiate(vfxPrefab, worldPos, Quaternion.identity);
+
+        ParticleSystem ps = vfxInstance.GetComponent<ParticleSystem>();
+
+        float actualDuration = (ps != null) ? ps.main.duration : duration;
+
+        Destroy(vfxInstance, actualDuration);
+    }
+
+    public void DelayResolveEnemyTurn(float delay)
+    {
+        StartCoroutine(ResolveEnemyTurnWithDelay(delay));
+    }
+
+    private IEnumerator ResolveEnemyTurnWithDelay(float delay)
+    {
+        if (delay > 0)
+        {
+            yield return new WaitForSeconds(delay);
+        }
+
+        ResolveEnemyTurn();
+    }
 }

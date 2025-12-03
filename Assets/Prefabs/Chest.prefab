@@ -105,3 +105,5 @@ MonoBehaviour:
   contents:
   - {fileID: 11400000, guid: bf52b437b54751c4b99b9b15e45cd004, type: 2}
   openedSprite: {fileID: 21300040, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+  sfxClip: {fileID: 8300000, guid: 55368c59c262b674eb94efdafbfb8d94, type: 3}
+  sfxVolume: 0.15

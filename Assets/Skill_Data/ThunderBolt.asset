@@ -19,6 +19,11 @@ MonoBehaviour:
   type: 0
   effectType: 0
   icon: {fileID: 21300000, guid: 99628d91ffb9c074db692dcee1db52eb, type: 3}
+  vfxPrefab: {fileID: 1141330259687333427, guid: 6718dc24203da53468af9ada8fef7d6d, type: 3}
+  vfxDuration: 0.5
+  sfxClip: {fileID: 8300000, guid: d190b6f2e28d5354e8bbe67a14a50ec9, type: 3}
+  sfxVolume: 0.3
   mpCost: 2
   range: 3
+  damageMultiplier: 1
   aoeRadius: 0

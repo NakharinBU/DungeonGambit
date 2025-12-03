@@ -10,9 +10,17 @@ public class ManaFlow : PassiveSkill
         {
             if (user.stats != null)
             {
-                user.stats.mp += power;
+                if (vfxPrefab != null && user.DungeonManagerRef != null)
+                {
+                    user.DungeonManagerRef.PlayVFX(vfxPrefab, user.position, vfxDuration);
+                }
 
-                user.stats.mp = Mathf.Min(user.stats.mp, user.stats.maxMp);
+                if (sfxClip != null && AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySFX(sfxClip, sfxVolume);
+                }
+
+                user.RestoreMana((int)power);
 
                 Debug.Log($"[{skillName}] Activated! Gained {power} Mana on Kill. Current Mana: {user.stats.mp}");
             }

@@ -9,6 +9,11 @@ public class Chest : InteractableObject
 
     public Sprite openedSprite;
 
+
+    public AudioClip sfxClip;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
+
+
     public override void Interact(Player player)
     {
         if (isOpened)
@@ -33,6 +38,11 @@ public class Chest : InteractableObject
             {
                 if (item != null)
                 {
+                    if (sfxClip != null && AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlaySFX(sfxClip, sfxVolume);
+                    }
+
                     player.inventory.AddItem(item, 1);
                     Debug.Log($"- Added item: {item.itemName}");
                 }

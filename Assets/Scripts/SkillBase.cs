@@ -12,6 +12,12 @@ public class SkillBase : ScriptableObject
 
     protected SkillEffect skillEffect;
 
+    public GameObject vfxPrefab;
+    public float vfxDuration = 0.5f;
+
+    public AudioClip sfxClip;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
+
     protected virtual void OnEnable()
     {
         skillEffect = new SkillEffect(effectType, power);

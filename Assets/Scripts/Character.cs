@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -17,6 +17,11 @@ public class Character : MonoBehaviour
     public Status Stats => stats;
 
     protected DungeonManager dungeonManager;
+
+    public GameObject deathVFXPrefab;
+
+    public AudioClip sfxClip;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
 
     protected virtual void Awake()
     {
@@ -82,8 +87,18 @@ public class Character : MonoBehaviour
 
     public virtual void Die()
     {
-        
-        Debug.Log($"{characterName} ∂Ÿ°°”®—¥·≈È«!");
+
+        if (deathVFXPrefab != null && dungeonManager != null)
+        {
+            dungeonManager.PlayVFX(deathVFXPrefab, position);
+        }
+
+        if (sfxClip != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(sfxClip, sfxVolume);
+        }
+
+        dungeonManager?.RemoveCharacter(this);
 
         Destroy(gameObject);
     }
@@ -92,7 +107,7 @@ public class Character : MonoBehaviour
     {
         if (this is Player)
         {
-            // GameManager.Instance.turnManager.EndPlayerTurn(); // ®–‡√’¬°„π Player.OnTurnEnd()
+            // GameManager.Instance.turnManager.EndPlayerTurn(); // ‡∏à‡∏∞‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÉ‡∏ô Player.OnTurnEnd()
         }
     }
 

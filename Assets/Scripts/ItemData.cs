@@ -15,6 +15,11 @@ public abstract class ItemData : ScriptableObject
     public ItemType Type => type;
     public int Value => value;
 
+
+    public AudioClip sfxClip;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
+
+
     public virtual void Use(Player target)
     {
         if (type != ItemType.Consumable) return;
@@ -22,7 +27,10 @@ public abstract class ItemData : ScriptableObject
         switch (effect)
         {
             case ItemEffect.HealHP:
-
+                if (sfxClip != null && AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySFX(sfxClip, sfxVolume);
+                }
                 target.Heal(value); 
                 Debug.Log($"{target.characterName} ใช้ {name} และฟื้นฟู HP {value} หน่วย");
                 break;

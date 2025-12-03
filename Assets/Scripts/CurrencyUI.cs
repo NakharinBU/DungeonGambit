@@ -2,12 +2,19 @@ using UnityEngine;
 using TMPro;
 using static EnumData;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class CurrencyUI : MonoBehaviour
 {
     public CurrencyType typeToDisplay = CurrencyType.Gold;
     private TextMeshProUGUI textComponent;
     private Player player;
+
+
+    public GameObject goldIcon;
+    public GameObject soulIcon;
+    public GameObject undoIcon;
+
 
     private void Start()
     {
@@ -54,13 +61,13 @@ public class CurrencyUI : MonoBehaviour
             switch (type)
             {
                 case CurrencyType.Gold:
-                    textComponent.text = $"Gold: {value} G";
+                    textComponent.text = $"     {value}";
                     break;
                 case CurrencyType.SoulPoint:
-                    textComponent.text = $"Soul: {value} S";
+                    textComponent.text = $"     {value}";
                     break;
                 case CurrencyType.UndoPoint:
-                    textComponent.text = $"Undo: {value} U";
+                    textComponent.text = $"     {value}";
                     break;
             }
         }

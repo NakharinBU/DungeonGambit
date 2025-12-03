@@ -18,3 +18,5 @@ MonoBehaviour:
   value: 5
   effect: 0
   icon: {fileID: 21300000, guid: 805736230f06ac449a72b0ecb951e522, type: 3}
+  sfxClip: {fileID: 8300000, guid: 436cfc898186c0e4582a1b971153245a, type: 3}
+  sfxVolume: 0.2
